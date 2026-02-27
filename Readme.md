@@ -1,17 +1,16 @@
 # IntelligentAudio.NET
 
-[![.NET 10](https://img.shields.io)](https://dotnet.microsoft.com)
-[![C# 14](https://img.shields.io)](https://learn.microsoft.com)
-[![License: MIT](https://img.shields.io)](https://opensource.org)
-[![Ableton Live](https://img.shields.io)](https://www.ableton.com)
+### .NET 10] | C# 14] | [License: MIT] | [Ableton Live]
 
-**IntelligentAudio.NET** is a high-performance, AI-driven bridge between your voice and **Ableton Live**. Built on the cutting-edge .NET 10 LTS stack, it transforms spoken intent and musical audio into real-time DAW commands and MIDI data.
+*IntelligentAudio.NET** is a high-performance, AI-driven bridge between your voice and **Ableton Live**.
+Built on the cutting-edge .NET 10 LTS stack, it transforms spoken intent and musical audio into real-time
+DAW commands and MIDI data.
 
 > "Stop clicking, start creating. Bridge the gap between musical intent and technical execution."
 
 ---
 
-## ✨ Key Features
+## Key Features
 
 - **AI-Powered Inference**: Integrated with [Whisper.net](https://github.com) for state-of-the-art speech and chord recognition.
 - **Zero-Allocation Pipeline**: Leverages `Span<float>` and C# 14 memory management for ultra-low latency audio processing.
@@ -21,7 +20,7 @@
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
 The project follows a **Clean Architecture** pattern to ensure the core logic remains independent of external frameworks or hardware:
 
@@ -32,7 +31,7 @@ The project follows a **Clean Architecture** pattern to ensure the core logic re
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 
@@ -49,7 +48,8 @@ The project follows a **Clean Architecture** pattern to ensure the core logic re
     ```
 
 2. **Download Whisper Model:**
-    Download a GGML model (e.g., `base.bin`) from [Hugging Face](https://huggingface.co) and place it in your model directory.
+    Dev: Download a GGML model (e.g., `base.bin`) from [Hugging Face](https://huggingface.co) and place it in your model directory.
+    In final production, this will be handled by Whisper it self.
 
 3. **Configure `appsettings.json`:**
     Update the `ModelPath` and `Port` to match your local setup.
@@ -64,7 +64,7 @@ The project follows a **Clean Architecture** pattern to ensure the core logic re
 
 ---
 
-## 🛠️ Performance Highlights
+## Performance Highlights
 
 - **`Span<T>` everywhere**: We process audio buffers without heap allocations to prevent Garbage Collector spikes during recording.
 - **System.Threading.Channels**: Non-blocking audio streaming between the microphone source and the AI inference engine.
@@ -72,11 +72,11 @@ The project follows a **Clean Architecture** pattern to ensure the core logic re
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome! Whether it's a new `IAudioProcessor` for audio cleaning or a new Ableton command, feel free to open a Pull Request.
 
-## 📄 License
+## License
 
 This project is licensed under the **MIT License**.
 
