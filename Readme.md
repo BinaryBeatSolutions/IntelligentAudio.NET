@@ -1,86 +1,56 @@
 # IntelligentAudio.NET
 
-### .NET 10] | C# 14] | [License: MIT] | [Ableton Live]
+[.NET 10 LTS] | [C# 14] | [License: MIT] | [Ableton] | [FL-Studio] | [LOGIC PRO]
 
-*IntelligentAudio.NET** is a high-performance, AI-driven bridge between your voice and **Ableton Live**.
-Built on the cutting-edge .NET 10 LTS stack, it transforms spoken intent and musical audio into real-time
-DAW commands and MIDI data.
-
-> "Stop clicking, start creating. Bridge the gap between musical intent and technical execution."
+**IntelligentAudio.NET** is a high-performance, AI-driven engine designed to bridge the gap between
+musical intent and DAW execution. Built on the **.NET 10 LTS** stack, it utilizes state-of-the-art
+speech-to-chord inference to provide hands-free control for music producers.
 
 ---
 
-## Key Features
+## Architectural Excellence
 
-- **AI-Powered Inference**: Integrated with [Whisper.net](https://github.com) for state-of-the-art speech and chord recognition.
-- **Zero-Allocation Pipeline**: Leverages `Span<float>` and C# 14 memory management for ultra-low latency audio processing.
-- **Modular Architecture**: Decoupled Engine, Infrastructure, and Contracts projects for maximum scalability.
-- **Real-time OSC Bridge**: Lightning-fast communication with Ableton Live via [OscCore](https://github.com).
-- **Theory Intelligent**: Musical logic powered by [DryWetMidi](https://github.com).
+    This version represents a complete architectural rebuild, moving away from legacy Reflection-based systems to a modern,
+    decoupled **Event-Driven Architecture**:
+
+- **Zero-Allocation Pipeline**: Leveraging `Span<float>` and `Memory<T>` for real-time audio cleaning without Garbage Collector spikes.
+- **Asynchronous Orchestration**: Powered by `System.Threading.Channels` for non-blocking communication between the Microphone, AI Engine, and Network layers.
+- **DAW-Agnostic Design**: A Factory-based driver system (`IDawClient`) that currently supports **Ableton Live** via OSC, with a roadmap for FL Studio (MIDI) and Logic Pro (VST Bridge).
+- **In-Memory Event Bus**: A `DefaultEventAggregator` that decouples AI analysis from hardware delivery, ensuring a "No-Bug" environment.
 
 ---
 
-## Architecture
+## Technical Stack
 
-The project follows a **Clean Architecture** pattern to ensure the core logic remains independent of external frameworks or hardware:
+    - **AI Inference**: [Whisper.net](https://github.com) (Optimized for .NET 10).
+    - **Network Layer**: [BuildSoft.OscCore](https://github.com) (High-performance, low-latency OSC).
+    - **Audio I/O**: [NAudio](https://github.com) (Windows ASIO/Wasapi) with an abstracted `IAudioSource` for future macOS support.
+    - **Music Theory**: [DryWetMidi](https://github.com).
 
-- **`IntelligentAudio.Contracts`**: Interfaces, Events, and DTOs (The "Truth").* **`IntelligentAudio.Contracts`**: Interfaces, Events, and DTOs (The "Truth").
-- **`IntelligentAudio.Engine`**: The "Brain" (Processors, AI-orchestration, Audio Pipelines).* **`IntelligentAudio.Engine`**: The "Brain" (Processors, AI-orchestration, Audio Pipelines).
-- **`IntelligentAudio.Infrastructure`**: The "Hands" (OSC, NAudio, MIDI implementations).* **`IntelligentAudio.Infrastructure`**: The "Hands" (OSC, NAudio, MIDI implementations).
-- **`IntelligentAudio.Server`**: The Composition Root (Dependency Injection, Hosting).* **`IntelligentAudio.Server`**: The Composition Root (Dependency Injection, Hosting).
+---
+
+## Project Structure
+
+- **`IntelligentAudio.Contracts`**: The "Truth" (Interfaces, Events, Models). No external dependencies.
+- **`IntelligentAudio.Engine`**: The "Brain" (Audio Processing, AI Orchestration, Event Aggregation).
+- **`IntelligentAudio.Infrastructure`**: The "Hands" (OSC Clients, MIDI, Audio Hardware Drivers).
+- **`IntelligentAudio.Server`**: The Composition Root (Dependency Injection, Hosting).
+
+---
+
+## Roadmap
+
+    .NET 10 Core Engine & Pipeline
+    Ableton Live OSC Driver
+    FL Studio MIDI Scripting Driver
+    VST3 Bridge for Logic Pro/Cubase
+    macOS CoreAudio Implementation
 
 ---
 
 ## Getting Started
 
-### Prerequisites
+### Requirements
 
-1. **[.NET 10 SDK](https://dotnet.microsoft.com)** (LTS)
-2. **Ableton Live** (11 or 12 recommended)
-3. **Max for Live** (Included in Suite or as an add-on)
-
-### Installation
-
-1. **Clone the repository:**
-    ```bash
-    git clone https://github.com
-    cd IntelligentAudio.NET
-    ```
-
-2. **Download Whisper Model:**
-    Dev: Download a GGML model (e.g., `base.bin`) from [Hugging Face](https://huggingface.co) and place it in your model directory.
-    In final production, this will be handled by Whisper it self.
-
-3. **Configure `appsettings.json`:**
-    Update the `ModelPath` and `Port` to match your local setup.
-
-4. **Run the Server:**
-    ```bash
-    dotnet run --project src/IntelligentAudio.Server
-    ```
-
-5. **Setup Ableton:**
-    Drag the `IntelligentAudio.amxd` (found in `/m4l`) onto a MIDI track in Ableton Live.
-
----
-
-## Performance Highlights
-
-- **`Span<T>` everywhere**: We process audio buffers without heap allocations to prevent Garbage Collector spikes during recording.
-- **System.Threading.Channels**: Non-blocking audio streaming between the microphone source and the AI inference engine.
-- **BackgroundService**: Fully asynchronous orchestration of I/O, AI, and Network tasks.
-
----
-
-## Contributing
-
-Contributions are welcome! Whether it's a new `IAudioProcessor` for audio cleaning or a new Ableton command, feel free to open a Pull Request.
-
-## License
-
-This project is licensed under the **MIT License**.
-
----
-
-*Developed by **BinaryBeatSolutions** – Revolutionizing the workflow for the modern music producer.*
-P-adresser, Whisper-modellstigar.
+- **.NET 10 SDK** (Long Term Support).
+- A Whisper GGML model (e.g., `base.bin`).

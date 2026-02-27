@@ -9,28 +9,20 @@ public class OscService(
 {
     protected override async Task ExecuteAsync(CancellationToken ct)
     {
-        logger.LogInformation("OSC Service startad. Lyssnar efter ackord...");
-
-        // Vi prenumererar på postkontoret. 
-        // ReadAllAsync i .NET 10 är extremt effektivt för detta.
+        // Vi prenumererar på kanalen för ChordDetectedEvent
         await foreach (var @event in eventAggregator.Subscribe<ChordDetectedEvent>(ct))
         {
-            try
+            // 1. Hitta rätt "drivrutin" (Ableton, FL etc) via fabriken
+            var client = clientFactory.GetClient(@event.ClientId);
+
+            if (client is not null)
             {
-                // Hämta rätt klient (t.ex. baserat på porten i appsettings.json)
-                var client = clientFactory.GetClient(@event.ClientId);
-
-                if (client != null)
-                {
-                    // Skicka ackordet till Ableton via OscCore
-                    await client.SendChordAsync(@event.Chord);
-
-                    logger.LogDebug("OSC skickat: {Chord} till port {Port}", @event.Chord.Name, client.Port);
-                }
+                // 2. Skicka ackordet (nu med loggning och BuildSoft-prestanda!)
+                await client.SendChordAsync(@event.Chord);
             }
-            catch (Exception ex)
+            else
             {
-                logger.LogError(ex, "Kunde inte skicka OSC-meddelande");
+                logger.LogWarning("Mottog ackord för okänd klient: {Id}", @event.ClientId);
             }
         }
     }

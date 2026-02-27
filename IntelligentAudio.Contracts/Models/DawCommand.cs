@@ -1,34 +1,12 @@
-﻿
-namespace IntelligentAudio.Contracts.Models;
+﻿namespace IntelligentAudio.Contracts.Models;
 
 /// <summary>
-/// Default events. 
+/// Representerar ett generiskt kommando som skickas till en DAW.
 /// </summary>
-public enum DawAction
-{
-    // Transport
-    Play,
-    Stop,
-    Pause,
-    Record,
-    ToggleLoop,
-
-    // Navigation & Editing
-    Undo,
-    Redo,
-    NextTrack,
-    PreviousTrack,
-
-    // Track Management
-    ArmTrack,
-    SoloTrack,
-    MuteTrack,
-
-    // Session Specific
-    AddMidiClip,
-    FireScene,
-
-    // Global
-    SetTempo,
-    SaveProject
-}
+/// <param name="Action">Vilken typ av åtgärd (Play, Record, etc.)</param>
+/// <param name="TargetIndex">Valfritt index för spår, scen eller klipp (t.ex. Track 3)</param>
+/// <param name="Value">Valfritt värde (t.ex. BPM-tal eller volymnivå)</param>
+public record DawCommand(
+    DawAction Action,
+    int? TargetIndex = null,
+    object? Value = null);

@@ -1,6 +1,7 @@
 ﻿
 namespace IntelligentAudio.Contracts.Events;
 
-public class ChordDetectedEvent
-{
-}
+public record ChordDetectedEvent(
+    Guid ClientId,
+    ChordInfo Chord,
+    DateTime Timestamp);

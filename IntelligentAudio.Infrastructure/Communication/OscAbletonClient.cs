@@ -1,52 +1,63 @@
 ﻿using BuildSoft.OscCore;
 
+
 namespace IntelligentAudio.Infrastructure.Communication;
 
-public class OscAbletonClient : IDawClient
+public class OscAbletonClient(
+    Guid clientId,
+    string ip,
+    int port,
+    ILogger<OscAbletonClient> logger) : IDawClient
 {
-    private readonly OscClient _client;
-    public Guid ClientId { get; }
-    public string Name => "Ableton Live (BuildSoft Engine)";
-    public int Port { get; }
+    private readonly OscClient _client = new(ip, port);
 
-    public OscAbletonClient(Guid clientId, string ip, int port)
-    {
-        ClientId = clientId;
-        Port = port;
-
-        // I BuildSoft skapar vi en klient direkt mot IP och Port.
-        // Den sköter UDP-hanteringen internt på ett högpresterande sätt.
-        _client = new OscClient(ip, port);
-    }
+    public Guid ClientId => clientId;
+    public string Name => "Ableton Live (High Performance)";
+    public int Port => port;
 
     public async Task SendChordAsync(ChordInfo chord)
     {
-        // BuildSoft använder en effektiv Send-metod som stöder multipla argument
-        _client.Send("/ia/chord", chord.Name, (float)chord.Confidence);
+        if (chord is null) return;
+
+        try
+        {
+            // Vi använder vår högpresterande extension-metod med uint-tags
+            _client.SendChord("/ia/chord", chord.Name, (float)chord.Confidence);
+
+            // Logga på Debug-nivå för att inte skräpa ner konsolen i produktion, 
+            // men ge full insyn under utveckling.
+            logger.LogDebug("[OSC OUT] Chord: {Name} (Conf: {Confidence:P0}) -> Port: {Port}",
+                chord.Name, chord.Confidence, Port);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Kunde inte skicka ackord till Ableton på port {Port}", Port);
+        }
 
         await Task.CompletedTask;
     }
 
     public async Task SendCommandAsync(DawCommand command)
     {
-        // Mappa din DawAction till Abletons specifika OSC-sökvägar
-        string path = command.Action switch
+        try
         {
-            DawAction.Play => "/live/remote/transport/play",
-            DawAction.Stop => "/live/remote/transport/stop",
-            DawAction.Record => "/live/remote/transport/record",
-            _ => $"/ia/control/{command.Action.ToString().ToLower()}"
-        };
+            // Mappa och skicka kommando
+            _client.SendTrigger($"/ia/control/{command.Action.ToString().ToLower()}", 1);
 
-        // Skicka värdet 1 för att trigga händelsen i Max for Live [udpreceive]
-        _client.Send(path, 1);
+            logger.LogInformation("[OSC CMD] Executing: {Action} on Client: {Id}",
+                command.Action, ClientId);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Kommando-fel för DAW-klient {Id}", ClientId);
+        }
 
         await Task.CompletedTask;
     }
 
     public void Dispose()
     {
-        // BuildSoft-klienten stänger sina resurser här
+        logger.LogInformation("Stänger ner OSC-anslutning till {Name} (Port: {Port})", Name, Port);
         _client.Dispose();
     }
 }

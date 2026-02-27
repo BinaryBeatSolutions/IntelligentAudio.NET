@@ -12,4 +12,5 @@ global using IntelligentAudio.Contracts.Events;
 global using IntelligentAudio.Engine.Services;
 global using IntelligentAudio.Contracts.Interfaces;
 global using IntelligentAudio.Contracts.Models;
+global using IntelligentAudio.Infrastructure.Extensions;
 
