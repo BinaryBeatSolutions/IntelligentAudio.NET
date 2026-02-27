@@ -1,0 +1,49 @@
+## [ Visual Studio / .NET ]
+# Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Bb]in/
+[Oo]bj/
+
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Visual Studio 2022/2025 cache
+.vs/
+
+## [ OS / IDE ]
+.DS_Store
+.vscode/
+.idea/
+*.swp
+
+## [ IntelligentAudio Specifics ]
+# Ignore heavy Whisper AI models (should be downloaded/placed manually)
+*.bin
+!ggml-tiny.bin  # (Optional: keep a tiny model if you want it in the repo)
+
+# Audio recordings/temp files
+*.wav
+*.mp3
+*.aif
+*.tmp
+
+## [ Ableton & Max for Live ]
+# Ignore Ableton project backups and temp files
+Backup/
+* [Project Info]
+*.als
+*.amxd.bak
+
+## [ NuGet / Packages ]
+# Restore logs
+project.assets.json
+project.lock.json
+*.nuget.props
+*.nuget.targets
