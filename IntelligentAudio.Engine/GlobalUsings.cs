@@ -6,6 +6,7 @@ global using System.Threading.Tasks;
 global using System.Threading.Channels;
 global using Microsoft.Extensions.Logging;
 global using Microsoft.Extensions.Hosting;
+global using System.Collections.Concurrent;
 
 global using IntelligentAudio.Contracts.Models;
 global using IntelligentAudio.Contracts.Interfaces;

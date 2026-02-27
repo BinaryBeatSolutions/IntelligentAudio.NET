@@ -1,7 +1,7 @@
 ﻿
 namespace IntelligentAudio.Contracts.Interfaces;
 
-public interface IAbletonClient
+public interface IAbletonClient : IDawClient
 {
 }
 
