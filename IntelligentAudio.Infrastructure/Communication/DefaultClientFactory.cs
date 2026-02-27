@@ -23,7 +23,7 @@ public class DefaultDawClientFactory(
             {
                 "ableton" => new OscAbletonClient(id, "127.0.0.1", port, clientLogger),
                 // "flstudio" => new MidiFlStudioClient(id, loggerFactory.CreateLogger<MidiFlStudioClient>()),
-                _ => throw new NotSupportedException($"DAW-typen '{dawType}' stöds inte ännu.")
+                _ => throw new NotSupportedException($"DAW-typ '{dawType}' not supported yet.")
             };
         });
     }

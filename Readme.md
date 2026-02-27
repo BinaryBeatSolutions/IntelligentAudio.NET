@@ -13,10 +13,14 @@ speech-to-chord inference to provide hands-free control for music producers.
     This version represents a complete architectural rebuild, moving away from legacy Reflection-based systems to a modern,
     decoupled **Event-Driven Architecture**:
 
-- **Zero-Allocation Pipeline**: Leveraging `Span<float>` and `Memory<T>` for real-time audio cleaning without Garbage Collector spikes.
-- **Asynchronous Orchestration**: Powered by `System.Threading.Channels` for non-blocking communication between the Microphone, AI Engine, and Network layers.
-- **DAW-Agnostic Design**: A Factory-based driver system (`IDawClient`) that currently supports **Ableton Live** via OSC, with a roadmap for FL Studio (MIDI) and Logic Pro (VST Bridge).
-- **In-Memory Event Bus**: A `DefaultEventAggregator` that decouples AI analysis from hardware delivery, ensuring a "No-Bug" environment.
+    - Zero-Allocation Pipeline: Leveraging `Span<float>` and `Memory<T>` for real-time audio cleaning without Garbage Collector spikes.
+    - Asynchronous Orchestration: Powered by `System.Threading.Channels` for non-blocking communication between the Microphone, AI Engine, and Network layers.
+    - DAW-Agnostic Design: A Factory-based driver system (`IDawClient`) that currently supports Ableton Live via OSC, with a roadmap for FL Studio (MIDI) and Logic Pro (VST Bridge).
+    - In-Memory Event Bus: A `DefaultEventAggregator` that decouples AI analysis from hardware delivery, ensuring a "No-Bug" environment.
+
+    IntelligentAudio.NET uses a Dynamic Discovery Architecture. 
+    Instead of hardcoding ports, clients announce themselves via a handshake protocol. 
+    The server dynamically spins up dedicated UDP transmitters for each instance, ensuring perfect isolation and zero configuration for the end user."
 
 ---
 
