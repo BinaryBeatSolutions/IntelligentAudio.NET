@@ -1,32 +1,86 @@
-Projektstruktur (Solution)
+# IntelligentAudio.NET
 
-## IntelligentAudio.Contracts (Klassbibliotek)
+[![.NET 10](https://img.shields.io)](https://dotnet.microsoft.com)
+[![C# 14](https://img.shields.io)](https://learn.microsoft.com)
+[![License: MIT](https://img.shields.io)](https://opensource.org)
+[![Ableton Live](https://img.shields.io)](https://www.ableton.com)
 
-    Detta är "Single Source of Truth". Inga beroenden utåt, bara definitioner.
-    Interfaces: IPlugin, IClient, IAudioProcessor.
-    Events: ChordDetectedEvent, ClientRegisteredEvent.
-    Models: ChordInfo (Namn, Toner, Confidence).
+**IntelligentAudio.NET** is a high-performance, AI-driven bridge between your voice and **Ableton Live**. Built on the cutting-edge .NET 10 LTS stack, it transforms spoken intent and musical audio into real-time DAW commands and MIDI data.
 
-## IntelligentAudio.Engine (Klassbibliotek)
+> "Stop clicking, start creating. Bridge the gap between musical intent and technical execution."
 
-    Här bor "hjärnan". Detta projekt känner till Contracts men inte din ConsoleApp.
+---
 
-    AudioPipeline.cs: Hanterar din Channel<float[]>.
-    Processing/: NoiseGateProcessor.cs, HighPassProcessor.cs.
-    Intelligence/: WhisperService.cs (Själva AI-logiken).
-    Coordination/: BroadcastService.cs (Mappar events till rätt klienter).
+## ✨ Key Features
 
-## IntelligentAudio.Infrastructure (Klassbibliotek)
+- **AI-Powered Inference**: Integrated with [Whisper.net](https://github.com) for state-of-the-art speech and chord recognition.
+- **Zero-Allocation Pipeline**: Leverages `Span<float>` and C# 14 memory management for ultra-low latency audio processing.
+- **Modular Architecture**: Decoupled Engine, Infrastructure, and Contracts projects for maximum scalability.
+- **Real-time OSC Bridge**: Lightning-fast communication with Ableton Live via [OscCore](https://github.com).
+- **Theory Intelligent**: Musical logic powered by [DryWetMidi](https://github.com).
 
-    Här bor tekniken som pratar med omvärlden.
+---
 
-    Audio/: MicrophoneSource.cs (NAudio/ASIO-implementation).
-    Communication/: OscClient.cs (OscCore-implementation), ClientFactory.cs.
-    Midi/: MidiOutputService.cs.
+## 🏗️ Architecture
 
-## IntelligentAudio.Server (Console App / Worker Service)
+The project follows a **Clean Architecture** pattern to ensure the core logic remains independent of external frameworks or hardware:
 
-    Här knyter du ihop allt (Composition Root).
+- **`IntelligentAudio.Contracts`**: Interfaces, Events, and DTOs (The "Truth").* **`IntelligentAudio.Contracts`**: Interfaces, Events, and DTOs (The "Truth").
+- **`IntelligentAudio.Engine`**: The "Brain" (Processors, AI-orchestration, Audio Pipelines).* **`IntelligentAudio.Engine`**: The "Brain" (Processors, AI-orchestration, Audio Pipelines).
+- **`IntelligentAudio.Infrastructure`**: The "Hands" (OSC, NAudio, MIDI implementations).* **`IntelligentAudio.Infrastructure`**: The "Hands" (OSC, NAudio, MIDI implementations).
+- **`IntelligentAudio.Server`**: The Composition Root (Dependency Injection, Hosting).* **`IntelligentAudio.Server`**: The Composition Root (Dependency Injection, Hosting).
 
-    Program.cs: Här konfigurerar du ServiceCollection (DI).
-    appsettings.json: Portar, IP-adresser, Whisper-modellstigar.
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+1. **[.NET 10 SDK](https://dotnet.microsoft.com)** (LTS)
+2. **Ableton Live** (11 or 12 recommended)
+3. **Max for Live** (Included in Suite or as an add-on)
+
+### Installation
+
+1. **Clone the repository:**
+    ```bash
+    git clone https://github.com
+    cd IntelligentAudio.NET
+    ```
+
+2. **Download Whisper Model:**
+    Download a GGML model (e.g., `base.bin`) from [Hugging Face](https://huggingface.co) and place it in your model directory.
+
+3. **Configure `appsettings.json`:**
+    Update the `ModelPath` and `Port` to match your local setup.
+
+4. **Run the Server:**
+    ```bash
+    dotnet run --project src/IntelligentAudio.Server
+    ```
+
+5. **Setup Ableton:**
+    Drag the `IntelligentAudio.amxd` (found in `/m4l`) onto a MIDI track in Ableton Live.
+
+---
+
+## 🛠️ Performance Highlights
+
+- **`Span<T>` everywhere**: We process audio buffers without heap allocations to prevent Garbage Collector spikes during recording.
+- **System.Threading.Channels**: Non-blocking audio streaming between the microphone source and the AI inference engine.
+- **BackgroundService**: Fully asynchronous orchestration of I/O, AI, and Network tasks.
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Whether it's a new `IAudioProcessor` for audio cleaning or a new Ableton command, feel free to open a Pull Request.
+
+## 📄 License
+
+This project is licensed under the **MIT License**.
+
+---
+
+*Developed by **BinaryBeatSolutions** – Revolutionizing the workflow for the modern music producer.*
+P-adresser, Whisper-modellstigar.
