@@ -26,10 +26,13 @@ speech-to-chord inference to provide hands-free control for music producers.
 
 ## Technical Stack
 
-    - **AI Inference**: [Whisper.net](https://github.com) (Optimized for .NET 10).
-    - **Network Layer**: [BuildSoft.OscCore](https://github.com) (High-performance, low-latency OSC).
-    - **Audio I/O**: [NAudio](https://github.com) (Windows ASIO/Wasapi) with an abstracted `IAudioSource` for future macOS support.
-    - **Music Theory**: [DryWetMidi](https://github.com).
+AI Inference: [Whisper.net](https://github.com) (Optimized for .NET 10).
+
+Network Layer: [BuildSoft.OscCore](https://github.com) (High-performance, low-latency OSC).
+
+Audio I/O: [NAudio](https://github.com) (Windows ASIO/Wasapi) with an abstracted `IAudioSource` for future macOS support.
+
+Music Theory: [DryWetMidi](https://github.com).
 
 ---
 

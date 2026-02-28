@@ -7,7 +7,9 @@ public class MidiFlStudioClient(Guid clientId) : IDawClient
 {
     public Guid ClientId => clientId;
     public string Name => "FL Studio (MIDI)";
-    public int Port => 0; // MIDI använder port-namn snarare än UDP-portar
+    //public int Port => 0; // MIDI använder port-namn snarare än UDP-portar
+
+    public int Port { get; set; } = 0;
 
     public async Task SendChordAsync(ChordInfo chord)
     {

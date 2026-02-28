@@ -4,7 +4,9 @@ public class VstBridgeClient(Guid clientId, int port) : IDawClient
 {
     public Guid ClientId => clientId;
     public string Name => "Generic VST Bridge";
-    public int Port => port;
+    //public int Port => port;
+
+    public int Port { get; set; } = 0;
 
     public async Task SendChordAsync(ChordInfo chord)
     {

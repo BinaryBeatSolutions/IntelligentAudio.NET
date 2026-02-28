@@ -12,8 +12,10 @@ public class OscAbletonClient(
     private readonly OscClient _client = new(ip, port);
 
     public Guid ClientId => clientId;
-    public string Name => "Ableton Live (High Performance)";
-    public int Port => port;
+    public string Name => "Ableton";
+   // public int Port => port;
+
+    public int Port { get; set; } = 0;
 
     public async Task SendChordAsync(ChordInfo chord)
     {
