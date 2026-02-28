@@ -4,12 +4,12 @@ namespace IntelligentAudio.Engine.Services;
 
 public class AudioPipeline
 {
-    // Vi skapar en kanal som hanterar arrayer av flyttal (ljudet)
-    // 'Unbounded' betyder att den kan växa, men i realtid vill vi 
-    // oftast ha 'Bounded' för att inte äta upp allt minne om AI:n laggar.
+    // We create a channel that handles arrays of floating point numbers (the sound)
+    // 'Unbounded' means it can grow, but in real time we
+    // usually want 'Bounded' to not eat up all the memory if the AI ​​lags.
     private readonly Channel<float[]> _channel = Channel.CreateBounded<float[]>(new BoundedChannelOptions(100)
     {
-        FullMode = BoundedChannelFullMode.DropOldest // Viktigt för realtid: Släng gammalt ljud om vi inte hinner med!
+        FullMode = BoundedChannelFullMode.DropOldest // Important for real time: Throw away old audio if we don't have time
     });
 
     public ChannelWriter<float[]> Writer => _channel.Writer;

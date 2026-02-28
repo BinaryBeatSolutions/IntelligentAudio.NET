@@ -10,7 +10,7 @@ public class AudioEngine(
 {
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        logger.LogInformation("Audio Engine startad. Väntar på ljudström...");
+        logger.LogInformation("Audio Engine startad. waiting for audio...");
 
         try
         {
@@ -33,11 +33,11 @@ public class AudioEngine(
         }
         catch (OperationCanceledException)
         {
-            logger.LogWarning("Audio Engine stängs ner...");
+            logger.LogWarning("Audio Engine shutting down.");
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Ett kritiskt fel uppstod i Audio Engine");
+            logger.LogError(ex, "Critical error occurred in Audio Engine");
         }
     }
 }

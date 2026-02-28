@@ -1,6 +1,4 @@
 ﻿
-using IntelligentAudio.Infrastructure.Communication;
-
 namespace IntelligentAudio.Infrastructure.Factories;
 
 public class DefaultDawClientFactory(
@@ -13,7 +11,7 @@ public class DefaultDawClientFactory(
     {
         return _clients.GetOrAdd(clientId, id =>
         {
-            logger.LogInformation("Skapar ny {DawType}-klient (ID: {Id}) på port {Port}",
+            logger.LogInformation("Creates new {DawType}-client (ID: {Id}) on port {Port}",
                 dawType.ToUpper(), id, port);
 
             // Vi skapar en specifik logger för den nya klient-instansen
@@ -35,7 +33,7 @@ public class DefaultDawClientFactory(
             return client;
         }
 
-        logger.LogWarning("Begärde klient {Id} som inte existerar i fabriken.", clientId);
+        logger.LogWarning("Client id: {Id} dont exist.", clientId);
         return null;
     }
 }

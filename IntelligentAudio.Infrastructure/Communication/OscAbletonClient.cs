@@ -1,8 +1,14 @@
 ﻿using BuildSoft.OscCore;
 
-
 namespace IntelligentAudio.Infrastructure.Communication;
 
+/// <summary>
+/// Ableton client
+/// </summary>
+/// <param name="clientId"></param>
+/// <param name="ip"></param>
+/// <param name="port"></param>
+/// <param name="logger"></param>
 public class OscAbletonClient(
     Guid clientId,
     string ip,
@@ -17,46 +23,56 @@ public class OscAbletonClient(
 
     public int Port { get; set; } = 0;
 
+    /// <summary>
+    /// Send Chord to DAW
+    /// </summary>
+    /// <param name="chord"></param>
+    /// <returns></returns>
     public async Task SendChordAsync(ChordInfo chord)
     {
         if (chord is null) return;
 
         try
         {
-            // Vi använder vår högpresterande extension-metod med uint-tags
+            
             _client.SendChord("/ia/chord", chord.Name, (float)chord.Confidence);
 
-            // Logga på Debug-nivå för att inte skräpa ner konsolen i produktion, 
-            // men ge full insyn under utveckling.
-            logger.LogDebug("[OSC OUT] Chord: {Name} (Conf: {Confidence:P0}) -> Port: {Port}",
+            logger.LogDebug("[IntelligentAudio.NET] Chord: {Name} (Conf: {Confidence:P0}) -> Port: {Port}",
                 chord.Name, chord.Confidence, Port);
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Kunde inte skicka ackord till Ableton på port {Port}", Port);
+            logger.LogError(ex, "[Error] Couldn't send command to Ableton on port {Port}", Port);
         }
 
         await Task.CompletedTask;
     }
 
+    /// <summary>
+    /// Send any command to DAW. 
+    /// </summary>
+    /// <param name="command"></param>
+    /// <returns></returns>
     public async Task SendCommandAsync(DawCommand command)
     {
         try
         {
-            // Mappa och skicka kommando
+            // Map and send command
             _client.SendTrigger($"/ia/control/{command.Action.ToString().ToLower()}", 1);
 
-            logger.LogInformation("[OSC CMD] Executing: {Action} on Client: {Id}",
-                command.Action, ClientId);
+            logger.LogInformation("[IntelligentAudio.NET] Executing: {Action} on Client: {Id}", command.Action, ClientId);
         }
         catch (Exception ex)
         {
-            logger.LogError(ex, "Kommando-fel för DAW-klient {Id}", ClientId);
+            logger.LogError(ex, "[Error] Command failed. ID: {Id}", ClientId);
         }
 
         await Task.CompletedTask;
     }
 
+    /// <summary>
+    /// Cleanup
+    /// </summary>
     public void Dispose()
     {
         logger.LogInformation("Stänger ner OSC-anslutning till {Name} (Port: {Port})", Name, Port);

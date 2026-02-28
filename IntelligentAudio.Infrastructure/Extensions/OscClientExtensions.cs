@@ -2,27 +2,30 @@
 
 namespace IntelligentAudio.Infrastructure.Extensions;
 
+/// <summary>
+/// Extensions for OscService
+/// </summary>
 public static class OscClientExtensions
 {
-    // Tag-hash för en sträng och en float (",sf")
-    // I OscCore motsvarar detta uint-värdet 6649484u (',' + 's' + 'f')
+    // Tag hash for a string and a float (",sf")
+    // In OscCore this corresponds to the uint value 6649484u (',' + 's' + 'f')
     private const uint StringFloatTags = 6649484u;
 
-    // Tag-hash för en enskild integer (",i") - används för triggers/commands
+    // Tag hash for a single integer (",i") - used for triggers/commands
     private const uint IntTag = 28160u;
 
     public static void SendChord(this OscClient client, string address, string name, float confidence)
     {
         var writer = client.Writer;
 
-        // 1. Skriv adressen och de förkompilerade taggarna
+        // 1. Write the address and the precompiled tags
         writer.WriteAddressAndTags(address, StringFloatTags);
 
-        // 2. Skriv datan direkt i bufferten (Zero-allocation)
+        // 2. Write the data directly into the buffer (Zero-allocation)
         writer.Write(name);
         writer.Write(confidence);
 
-        // 3. Skicka direkt via den interna socketen
+        // 3. Send directly via the internal socket
         client.Socket.Send(writer.Buffer, writer.Length, System.Net.Sockets.SocketFlags.None);
     }
 

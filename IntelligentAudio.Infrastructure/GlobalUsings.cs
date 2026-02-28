@@ -7,7 +7,10 @@ global using System.Threading.Tasks;
 global using Microsoft.Extensions.Logging;
 global using Microsoft.Extensions.Hosting;
 global using System.Collections.Concurrent;
+global using System.Net;
+global using System.Net.Sockets;
 
+global using IntelligentAudio.Infrastructure.Communication;
 global using IntelligentAudio.Contracts.Events;
 global using IntelligentAudio.Engine.Services;
 global using IntelligentAudio.Contracts.Interfaces;
