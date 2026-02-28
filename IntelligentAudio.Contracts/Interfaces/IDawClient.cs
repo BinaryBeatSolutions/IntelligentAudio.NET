@@ -6,7 +6,7 @@ public interface IDawClient : IDisposable
 {
     Guid ClientId { get; }
     string Name { get; }
-    int Port { get; set; }
+    int Port => 0;
 
     Task SendChordAsync(ChordInfo chord);
     Task SendCommandAsync(DawCommand command);

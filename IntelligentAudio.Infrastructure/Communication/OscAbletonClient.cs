@@ -34,7 +34,6 @@ public class OscAbletonClient(
 
         try
         {
-            
             _client.SendChord("/ia/chord", chord.Name, (float)chord.Confidence);
 
             logger.LogDebug("[IntelligentAudio.NET] Chord: {Name} (Conf: {Confidence:P0}) -> Port: {Port}",
