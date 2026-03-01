@@ -34,7 +34,7 @@ public static class AudioMath
         {
             sumSquares += (double)samples[i] * samples[i];
         }
-
+        Console.WriteLine($"{(float)Math.Sqrt(sumSquares / samples.Length)}");
         return (float)Math.Sqrt(sumSquares / samples.Length);
     }
 

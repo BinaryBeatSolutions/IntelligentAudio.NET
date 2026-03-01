@@ -6,7 +6,7 @@ public sealed class NoiseGateProcessor
 {
     private DateTime _lastActiveTime = DateTime.MinValue;
 
-    public float Threshold { get; set; } = 0.02f; // Justerbar känslighet
+    public float Threshold { get; set; } = 0.04f; // Justerbar känslighet
     public TimeSpan HoldTime { get; set; } = TimeSpan.FromMilliseconds(500);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

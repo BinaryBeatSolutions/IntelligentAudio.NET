@@ -12,8 +12,8 @@ public sealed class WindowsAudioSource : IAudioStreamSource, IDisposable
     private readonly IAudioBufferProvider _bufferProvider;
     private bool _isDisposed;
     private readonly ArrayPool<float> _pool = ArrayPool<float>.Shared;
-    private readonly NoiseGateProcessor _noiseGate ; // Eller via DI
-    private readonly SimpleHighPassFilter _filter ;       // Eller via DI
+    private readonly NoiseGateProcessor _noiseGate; 
+    private readonly SimpleHighPassFilter _filter;
 
     public ChannelReader<float[]> AudioStream => _channel.Reader;
     public bool IsRecording { get; private set; }
@@ -44,6 +44,7 @@ public sealed class WindowsAudioSource : IAudioStreamSource, IDisposable
 
         // 3. Prenumerera på eventet (Använd en lokal referens till kanalen för säkerhet)
         var writer = _channel.Writer;
+
         _waveIn.DataAvailable += (s, e) =>
         {
             if (_isDisposed || e.BytesRecorded <= 0) return;

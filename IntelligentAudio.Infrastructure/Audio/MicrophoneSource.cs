@@ -27,7 +27,7 @@ public class MicrophoneSource(
                     // Float-metoden, resamplade 16kHz data
                     float rms = bufferProvider.CalculateRms(buffer.AsSpan());
 
-                    if (rms > 0.08f) // Låg tröskel för att se att mätaren lever
+                    if (rms > 0.04f) // Låg tröskel för att se att mätaren lever
                     {
                         // Enkel visuell mätare i konsolen
                         string bar = new string('=', (int)Math.Clamp(rms * 100, 0, 50));
