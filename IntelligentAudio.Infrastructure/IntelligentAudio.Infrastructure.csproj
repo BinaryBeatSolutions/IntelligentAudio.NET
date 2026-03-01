@@ -19,4 +19,8 @@
     <ProjectReference Include="..\IntelligentAudio.Engine\IntelligentAudio.Engine.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Audio\Extensions\" />
+  </ItemGroup>
+
 </Project>

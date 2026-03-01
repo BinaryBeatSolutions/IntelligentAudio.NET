@@ -20,7 +20,6 @@
 ## Architectural Principles
 
 1. **Decoupled Design:** DAW-specific logic must be abstracted via interfaces.
-
 2. **Pipeline-Driven:** Use `System.IO.Pipelines` or `Channels` for data flow between modules.
 3. **Event-Driven:** Use high-performance events or `ValueTask` to minimize heap pressure.
 4. **Naming Convention:** Do NOT use words like "Simple" in class names. Use `Default[Name]Impl.cs` or specific descriptive names.

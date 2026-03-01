@@ -7,7 +7,13 @@ global using System.Threading.Channels;
 global using Microsoft.Extensions.Logging;
 global using Microsoft.Extensions.Hosting;
 global using System.Collections.Concurrent;
+global using System.Runtime.Intrinsics;
+global using System.Runtime.Intrinsics.X86;
+global using System.Runtime.InteropServices;
+global using System.Numerics;
+global using System.Runtime.CompilerServices;
 
+global using IntelligentAudio.Engine.Utils;
 global using IntelligentAudio.Contracts.Models;
 global using IntelligentAudio.Contracts.Interfaces;
 global using IntelligentAudio.Engine.Services;

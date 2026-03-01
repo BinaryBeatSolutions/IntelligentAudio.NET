@@ -7,6 +7,7 @@ global using Microsoft.Extensions.Hosting;
 global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.Logging;
 
+global using IntelligentAudio.Engine.Utils;
 global using IntelligentAudio.Contracts.Events;
 global using IntelligentAudio.Contracts.Models;
 global using IntelligentAudio.Engine.Services;

@@ -1,4 +1,5 @@
 ﻿
+
 var builder = Host.CreateApplicationBuilder(args);
 
 // Register the pipeline as a Singleton (there is only one pipe in the entire system)
@@ -8,6 +9,7 @@ builder.Services.AddSingleton<IDawClientFactory, DefaultDawClientFactory>();
 //builder.Services.AddSingleton<IIntelligentAudioService, AudioAnalysisService>();
 builder.Services.AddHostedService<OscService>();
 
+builder.Services.AddSingleton<IAudioBufferProvider, DefaultAudioBufferProviderImpl>();
 
 //builder.Services.AddSingleton<IModelLoader, ModelLoader>();   // eller Transient/Scoped efter behov
 builder.Services.AddHostedService<ModelService>();
