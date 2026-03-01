@@ -22,22 +22,18 @@ public class MicrophoneSource(
         {
             await foreach (var buffer in audioSource.AudioStream.ReadAllAsync(ct))
             {
-                try
-                {
-                    // Float-metoden, resamplade 16kHz data
-                    float rms = bufferProvider.CalculateRms(buffer.AsSpan());
+                // DEBUG: Skrivs detta ut? Då vet vi att data flödar genom kanalen!
+                // _logger.LogDebug("Received buffer with length: {length}", buffer.Length);
 
-                    if (rms > 0.04f) // Låg tröskel för att se att mätaren lever
-                    {
-                        // Enkel visuell mätare i konsolen
-                        string bar = new string('=', (int)Math.Clamp(rms * 100, 0, 50));
-                        Console.WriteLine($"[RMS: {rms:F4}] {bar}");
-                    }
-                }
-                finally
+                float rms = bufferProvider.CalculateRms(buffer.AsSpan());
+
+                if (rms > 0.04f) // Sänkt tröskel för test
                 {
-                    ArrayPool<float>.Shared.Return(buffer);
+                    string bar = new string('=', (int)Math.Clamp(rms * 100, 0, 50));
+                    //Console.WriteLine($"[RMS: {rms:F4}] {bar}");
                 }
+
+                ArrayPool<float>.Shared.Return(buffer);
             }
         }
         catch (OperationCanceledException) { /* Normal shutdown */ }

@@ -48,6 +48,8 @@ public sealed class DefaultWhisperModelService(ILogger<DefaultWhisperModelServic
         logger.LogInformation("[IntelligentAudio.NET] Model {type} loaded successfully.", modelType);
     }
 
+    // Overkill, but in future if we want to change model, we can do it winthin tha DAW
+    // depending on the need of a larger model.
     private GgmlType MapModelType(WhisperModelType type) => type switch
     {
         WhisperModelType.Tiny => GgmlType.TinyEn,

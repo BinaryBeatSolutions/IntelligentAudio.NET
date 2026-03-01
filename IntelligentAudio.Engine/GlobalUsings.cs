@@ -12,6 +12,7 @@ global using System.Runtime.Intrinsics.X86;
 global using System.Runtime.InteropServices;
 global using System.Numerics;
 global using System.Runtime.CompilerServices;
+global using System.Buffers;
 
 global using IntelligentAudio.Engine.Utils;
 global using IntelligentAudio.Contracts.Models;
