@@ -25,7 +25,7 @@ public class OscService(
     {
         // Starta mottagaren på standardporten
         _receiver = new OscServer(DiscoveryPort);
-        logger.LogInformation("[IntelligentAudio.NET] OSC Discovery Server startad på port {Port}", DiscoveryPort);
+        logger.LogInformation("[IntelligentAudio.NET] OSC Discovery Server started on port {Port}", DiscoveryPort);
 
         // Register Handshake
         _receiver.TryAddMethod("/ia/handshake", message =>
@@ -62,6 +62,9 @@ public class OscService(
         //Main loop
         await foreach (var @event in eventAggregator.Subscribe<ChordDetectedEvent>(ct))
         {
+            /*
+             * Her we can add serveral types, like send play, stop etc.
+             */
             var client = clientFactory.GetClient(@event.ClientId);
             if (client is not null)
             {

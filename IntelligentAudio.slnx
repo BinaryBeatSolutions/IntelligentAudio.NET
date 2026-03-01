@@ -5,6 +5,9 @@
   <Project Path="IntelligentAudio.Engine/IntelligentAudio.Engine.csproj" />
   <Project Path="IntelligentAudio.Infrastructure/IntelligentAudio.Infrastructure.csproj" />
   <Project Path="IntelligentAudio.Server/IntelligentAudio.Server.csproj" />
+  <Folder Name="/_SolutionItems/AI/">
+    <File Path="ARCHITECT.md" />
+  </Folder>
   <Folder Name="/_SolutionItems/ML4/">
     <File Path="ML4/ia_guid.js" />
   </Folder>

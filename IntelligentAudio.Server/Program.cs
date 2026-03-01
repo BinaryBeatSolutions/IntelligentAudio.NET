@@ -8,6 +8,10 @@ builder.Services.AddSingleton<IDawClientFactory, DefaultDawClientFactory>();
 //builder.Services.AddSingleton<IIntelligentAudioService, AudioAnalysisService>();
 builder.Services.AddHostedService<OscService>();
 
+
+//builder.Services.AddSingleton<IModelLoader, ModelLoader>();   // eller Transient/Scoped efter behov
+builder.Services.AddHostedService<ModelService>();
+
 // Will add these later:
 // builder.Services.AddHostedService<MicrophoneSource>();
 // builder.Services.AddHostedService<AudioEngine>();
