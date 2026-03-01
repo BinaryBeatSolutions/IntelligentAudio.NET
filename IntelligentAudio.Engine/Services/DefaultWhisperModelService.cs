@@ -4,6 +4,10 @@ namespace IntelligentAudio.Engine.Services;
 using Whisper.net;
 using Whisper.net.Ggml;
 
+/// <summary>
+/// Handles model loading, inc. download, (block system until finished) if no model exits.
+/// </summary>
+/// <param name="logger"></param>
 public sealed class DefaultWhisperModelService(ILogger<DefaultWhisperModelService> logger) : IDisposable
 {
     private WhisperFactory? _factory;
@@ -33,7 +37,7 @@ public sealed class DefaultWhisperModelService(ILogger<DefaultWhisperModelServic
         {
             logger.LogWarning("[Whisper] Model {type} missing. Initiating secure download...", modelType);
 
-            using var modelStream = await WhisperGgmlDownloader.Default.GetGgmlModelAsync(MapModelType(WhisperModelType.Tiny));
+            using var modelStream = await WhisperGgmlDownloader.Default.GetGgmlModelAsync(MapModelType(modelType));
             using var fileStream = new FileStream(fullPath, FileMode.Create, FileAccess.Write, FileShare.None, 4096, true);
 
             // TODO: Hook into your IEventAggregator here for OSC Progress
@@ -45,7 +49,7 @@ public sealed class DefaultWhisperModelService(ILogger<DefaultWhisperModelServic
         _factory?.Dispose();
         _factory = WhisperFactory.FromPath(fullPath);
 
-        logger.LogInformation("[IntelligentAudio.NET] Model {type} loaded successfully.", modelType);
+        //logger.LogInformation("[IntelligentAudio.NET] Model {type} loaded successfully.{fullPath}", modelType, fullPath);
     }
 
     // Overkill, but in future if we want to change model, we can do it winthin tha DAW
@@ -59,8 +63,16 @@ public sealed class DefaultWhisperModelService(ILogger<DefaultWhisperModelServic
         _ => GgmlType.Base
     };
 
+    /// <summary>
+    /// Creates WhisperProcessor
+    /// </summary>
+    /// <returns></returns>
+    /// <exception cref="InvalidOperationException"></exception>
     public WhisperProcessor CreateProcessor()
-        => _factory?.CreateBuilder().WithLanguage("en").Build()
+        => _factory?.CreateBuilder()
+            .WithLanguage("en") //Use of model could depend on the use. Below for chords only.
+            .WithPrompt("Musical chords: C, C#, Db, D, Eb, E, F, F#, G, Ab, A, Bb, B. Major, Minor, Maj7, m7, Dominant, Sus4, Diminished.")
+            .Build()
            ?? throw new InvalidOperationException("Brain not initialized. Call EnsureModelReadyAsync first.");
 
     public void Dispose() => _factory?.Dispose();

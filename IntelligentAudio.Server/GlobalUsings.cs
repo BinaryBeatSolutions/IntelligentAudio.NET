@@ -8,6 +8,7 @@ global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.Logging;
 global using System.Runtime.InteropServices;
 
+global using IntelligentAudio.Engine.Processors;
 global using IntelligentAudio.Contracts;
 global using IntelligentAudio.Infrastructure.Audio;
 global using IntelligentAudio.Engine.Utils;

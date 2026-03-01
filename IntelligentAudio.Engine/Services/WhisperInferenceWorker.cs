@@ -13,9 +13,8 @@ public sealed class WhisperInferenceWorker(
 
     protected override async Task ExecuteAsync(CancellationToken ct)
     {
-        await modelService.EnsureModelReadyAsync(WhisperModelType.Base, ct);
+        await modelService.EnsureModelReadyAsync(WhisperModelType.Tiny, ct);
         using var processor = modelService.CreateProcessor();
-        
 
         // Vi hyr EN stor buffert för hela livslängden (3 sekunders utrymme)
         float[] sessionBuffer = ArrayPool<float>.Shared.Rent(16000 * 3);
@@ -33,10 +32,11 @@ public sealed class WhisperInferenceWorker(
                     buffer.AsSpan(0, toCopy).CopyTo(sessionBuffer.AsSpan(currentPos));
                     currentPos += toCopy;
 
+                    logger.LogDebug("Received audio buffer of length {length}", buffer.Length);
+                    
                     // 2. Har vi samlat 1 sekund? (16000 samples)
                     if (currentPos >= 16000)
                     {
-                        
                         // 3. Kör Whisper på den exakta delen av bufferten
                         await foreach (var result in processor.ProcessAsync(sessionBuffer.AsMemory(0, currentPos), ct))
                         {

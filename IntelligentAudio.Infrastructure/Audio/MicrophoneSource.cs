@@ -8,7 +8,6 @@ public class MicrophoneSource(
     ILogger<MicrophoneSource> _logger, 
     IAudioBufferProvider bufferProvider) : BackgroundService
 {
-
     protected override async Task ExecuteAsync(CancellationToken ct)
     {
         _logger.LogInformation("[IntelligentAudio.NET] Input test initiated. Listening for audio...");
