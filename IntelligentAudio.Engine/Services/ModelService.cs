@@ -1,5 +1,4 @@
 ﻿
-
 namespace IntelligentAudio.Engine.Services;
 
 public class ModelService : IHostedService

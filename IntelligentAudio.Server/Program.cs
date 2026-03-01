@@ -1,4 +1,5 @@
 ﻿
+using IntelligentAudio.Engine.Processors;
 
 var builder = Host.CreateApplicationBuilder(args);
 
@@ -6,34 +7,30 @@ var builder = Host.CreateApplicationBuilder(args);
 builder.Services.AddSingleton<AudioPipeline>();
 builder.Services.AddSingleton<IEventAggregator, DefaultEventAggregator>();
 builder.Services.AddSingleton<IDawClientFactory, DefaultDawClientFactory>();
-//builder.Services.AddSingleton<IIntelligentAudioService, AudioAnalysisService>();
+builder.Services.AddSingleton<SimpleHighPassFilter>();
 builder.Services.AddHostedService<OscService>();
-
 builder.Services.AddSingleton<IAudioBufferProvider, DefaultAudioBufferProviderImpl>();
+builder.Services.AddSingleton(new NoiseGateProcessor { Threshold = 0.012f }); // 400 / 32768 ≈ 0.0122
 
-//builder.Services.AddSingleton<IModelLoader, ModelLoader>();   // eller Transient/Scoped efter behov
-builder.Services.AddHostedService<ModelService>();
 
-// Will add these later:
-// builder.Services.AddHostedService<MicrophoneSource>();
-// builder.Services.AddHostedService<AudioEngine>();
+if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+{
+    builder.Services.AddSingleton<IAudioStreamSource, WindowsAudioSource>();
+}
+else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+{
+    builder.Services.AddSingleton<IAudioStreamSource, MacAudioSource>();
+}
+
+//builder.Services.AddHostedService<ModelService>();
+builder.Services.AddHostedService<MicrophoneSource>();
+
 
 var host = builder.Build();
 
 var eventAggregator = host.Services.GetRequiredService<IEventAggregator>();
 var clientFactory = host.Services.GetRequiredService<IDawClientFactory>();
-
-// Create a client Ableton on port 9001
-// var testClientId = Guid.NewGuid();
-// clientFactory.CreateClient(testClientId, 9001, "ableton")
-// Simulate a callback with a chord.
-//_ = Task.Run(async () =>
-//{
-//    await Task.Delay(3000); //Detta generas på millisecs så du kanske inte hinner se detta meddelande under test. Öka då delay.
-//    var testChord = new ChordInfo("Cmaj7", 0.99, DateTime.UtcNow);
-//    eventAggregator.Publish(new ChordDetectedEvent(testClientId, testChord, DateTime.UtcNow));
-//    Console.WriteLine($"{testChord.Name} {testClientId}");
-//});
-// --- SMOKE TEST ---
+var audioBuffer = host.Services.GetRequiredService<IAudioBufferProvider>();
+var audioSource = host.Services.GetRequiredService<IAudioStreamSource>();
 
 await host.RunAsync();

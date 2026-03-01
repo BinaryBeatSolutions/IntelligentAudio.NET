@@ -6,7 +6,7 @@ namespace IntelligentAudio.Engine.Processors;
 /// </summary>
 /// <param name="cutoffFrequency"></param>
 /// <param name="sampleRate"></param>
-public class SimpleHighPass(float cutoffFrequency = 80f, int sampleRate = 44100) : BaseAudioProcessor
+public class SimpleHighPassFilter(float cutoffFrequency = 80f, int sampleRate = 44100) : BaseAudioProcessor
 {
     public override string Name => "HighPass Filter";
 

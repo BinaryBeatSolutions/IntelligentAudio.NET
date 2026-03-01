@@ -3,42 +3,43 @@ using NAudio.Wave;
 
 namespace IntelligentAudio.Infrastructure.Audio;
 
-public class MicrophoneSource(AudioPipeline pipeline, ILogger<MicrophoneSource> logger) : BackgroundService
+public class MicrophoneSource(
+    IAudioStreamSource audioSource,
+    ILogger<MicrophoneSource> _logger, 
+    IAudioBufferProvider bufferProvider) : BackgroundService
 {
-    private WaveInEvent? _waveIn;
 
-    protected override Task ExecuteAsync(CancellationToken ct)
+    protected override async Task ExecuteAsync(CancellationToken ct)
     {
-        _waveIn = new WaveInEvent
-        {
-            WaveFormat = new WaveFormat(44100, 16, 1) // Standard mono 44.1kHz
-        };
+        _logger.LogInformation("[IntelligentAudio.NET] Input test initiated. Listening for audio...");
 
-        _waveIn.DataAvailable += (s, e) =>
+        // Starta hårdvaran (Windows/NAudio)
+        if (audioSource is WindowsAudioSource winSource)
         {
-            // Konvertera 16-bit PCM till float[] för vår pipeline
-            var samples = new float[e.BytesRecorded / 2];
-            for (int i = 0; i < samples.Length; i++)
+            winSource.Start();
+        }
+        try
+        {
+            await foreach (var buffer in audioSource.AudioStream.ReadAllAsync(ct))
             {
-                short sample = (short)((e.Buffer[i * 2 + 1] << 8) | e.Buffer[i * 2]);
-                samples[i] = sample / 32768f;
+                try
+                {
+                    // Float-metoden, resamplade 16kHz data
+                    float rms = bufferProvider.CalculateRms(buffer.AsSpan());
+
+                    if (rms > 0.08f) // Låg tröskel för att se att mätaren lever
+                    {
+                        // Enkel visuell mätare i konsolen
+                        string bar = new string('=', (int)Math.Clamp(rms * 100, 0, 50));
+                        Console.WriteLine($"[RMS: {rms:F4}] {bar}");
+                    }
+                }
+                finally
+                {
+                    ArrayPool<float>.Shared.Return(buffer);
+                }
             }
-
-            // Skicka in i "röret"
-            pipeline.Writer.TryWrite(samples);
-        };
-
-        _waveIn.StartRecording();
-        logger.LogInformation("Mikrofoninspelning startad...");
-
-        // Håll tjänsten vid liv tills appen stängs
-        return Task.Delay(-1, ct);
-    }
-
-    public override void Dispose()
-    {
-        _waveIn?.StopRecording();
-        _waveIn?.Dispose();
-        base.Dispose();
+        }
+        catch (OperationCanceledException) { /* Normal shutdown */ }
     }
 }

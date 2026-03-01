@@ -24,6 +24,21 @@ public static class AudioMath
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static float CalculateRms(ReadOnlySpan<float> samples)
+    {
+        if (samples.IsEmpty) return 0f;
+
+        double sumSquares = 0;
+        // .NET 10 optimerar ofta denna loop automatiskt till SIMD om vi använder float
+        for (int i = 0; i < samples.Length; i++)
+        {
+            sumSquares += (double)samples[i] * samples[i];
+        }
+
+        return (float)Math.Sqrt(sumSquares / samples.Length);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void Resample(ReadOnlySpan<float> source, Span<float> destination)
     {
         if (source.IsEmpty || destination.IsEmpty) return;
