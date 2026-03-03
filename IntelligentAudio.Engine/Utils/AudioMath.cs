@@ -1,9 +1,9 @@
 ﻿
-
 namespace IntelligentAudio.Engine.Utils;
 
 public static class AudioMath
 {
+    
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static float CalculateRms(ReadOnlySpan<short> samples)
     {
@@ -23,6 +23,7 @@ public static class AudioMath
         return (float)Math.Sqrt(sumSquares / samples.Length);
     }
 
+
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static float CalculateRms(ReadOnlySpan<float> samples)
     {
@@ -37,6 +38,7 @@ public static class AudioMath
         //Console.WriteLine($"{(float)Math.Sqrt(sumSquares / samples.Length)}");
         return (float)Math.Sqrt(sumSquares / samples.Length);
     }
+
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void Resample(ReadOnlySpan<float> source, Span<float> destination)

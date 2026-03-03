@@ -10,34 +10,38 @@ public class AudioEngine(
 {
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        logger.LogInformation("Audio Engine startad. waiting for audio...");
+        logger.LogInformation("Audio Engine startad. Väntar på ljud...");
 
         try
         {
-            // Vi läser kontinuerligt från pipelinen (transportbandet)
-            await foreach (var buffer in pipeline.Reader.ReadAllAsync(stoppingToken))
+            // Vi läser AudioSegment (Buffer + Length)
+            await foreach (var segment in pipeline.Reader.ReadAllAsync(stoppingToken))
             {
-                // 1. Processa ljudet (HighPass, NoiseGate etc.)
-                // Vi använder Span för att arbeta direkt på bufferten utan kopior
-                Span<float> audioSpan = buffer.AsSpan();
+                // Skapa en Span som bara täcker den faktiska ljuddatan
+                Span<float> audioSpan = segment.Buffer.AsSpan(0, segment.Length);
 
+                // 1. Processa ljudet (HighPass, NoiseGate etc.)
                 foreach (var processor in processors)
                 {
                     processor.Process(audioSpan);
                 }
 
-                // 2. Skicka det tvättade ljudet till AI:n
-                // Vi gör detta asynkront så att vi inte blockerar nästa ljudpaket
-                _ = aiService.ProcessAudioAsync(buffer, stoppingToken);
+                // 2. Skicka till AI (Whisper)
+                // Vi måste VÄNTA (await) här, eller hantera pool-returen inuti tjänsten.
+                // För lägst latens och stabilitet: await här.
+                try
+                {
+                    await aiService.ProcessAudioAsync(segment.Buffer, segment.Length, stoppingToken);
+                    logger.LogInformation("aiService.ProcessAudioAsync");
+                }
+                finally
+                {
+                    // 3. NU lämnar vi tillbaka bufferten till poolen.
+                    // Ingen annan får röra denna array efter denna rad!
+                    ArrayPool<float>.Shared.Return(segment.Buffer);
+                }
             }
         }
-        catch (OperationCanceledException)
-        {
-            logger.LogWarning("Audio Engine shutting down.");
-        }
-        catch (Exception ex)
-        {
-            logger.LogError(ex, "Critical error occurred in Audio Engine");
-        }
+        catch (OperationCanceledException) { /* Normal shutdown */ }
     }
 }

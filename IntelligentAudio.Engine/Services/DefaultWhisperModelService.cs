@@ -20,6 +20,8 @@ public sealed class DefaultWhisperModelService(ILogger<DefaultWhisperModelServic
 
     public async Task EnsureModelReadyAsync(WhisperModelType modelType, CancellationToken ct)
     {
+        if (IsReady) return;
+
         // 1. Map to Whisper.net types
         var ggmlType = MapModelType(modelType);
         var fileName = $"ggml-{modelType.ToString().ToLower()}.bin";
@@ -45,11 +47,12 @@ public sealed class DefaultWhisperModelService(ILogger<DefaultWhisperModelServic
             logger.LogInformation("[Whisper] Download complete: {file}", fileName);
         }
 
+        if (IsReady) return; //Dual check so we know that the model is loaded correctly
         // 4. Load Factory (Hot-swap support)
         _factory?.Dispose();
         _factory = WhisperFactory.FromPath(fullPath);
 
-        //logger.LogInformation("[IntelligentAudio.NET] Model {type} loaded successfully.{fullPath}", modelType, fullPath);
+        logger.LogInformation("[IntelligentAudio.NET] Model {type} loaded successfully.", modelType);
     }
 
     // Overkill, but in future if we want to change model, we can do it winthin tha DAW
@@ -70,10 +73,13 @@ public sealed class DefaultWhisperModelService(ILogger<DefaultWhisperModelServic
     /// <exception cref="InvalidOperationException"></exception>
     public WhisperProcessor CreateProcessor()
         => _factory?.CreateBuilder()
-            .WithLanguage("en") //Use of model could depend on the use. Below for chords only.
+            .WithLanguage("en")
             .WithPrompt("Musical chords: C, C#, Db, D, Eb, E, F, F#, G, Ab, A, Bb, B. Major, Minor, Maj7, m7, Dominant, Sus4, Diminished.")
+            .WithGreedySamplingStrategy()
+            .ParentBuilder 
             .Build()
-           ?? throw new InvalidOperationException("Brain not initialized. Call EnsureModelReadyAsync first.");
+        ?? throw new InvalidOperationException("Brain not initialized. Call EnsureModelReadyAsync first.");
+
 
     public void Dispose() => _factory?.Dispose();
 }

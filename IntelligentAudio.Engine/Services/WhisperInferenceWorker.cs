@@ -5,58 +5,66 @@ using Whisper.net;
 namespace IntelligentAudio.Engine.Services;
 
 public sealed class WhisperInferenceWorker(
-    ILogger<WhisperInferenceWorker> logger,
-    DefaultWhisperModelService modelService, // Vår loader
-    AudioPipeline pipeline) : BackgroundService
+    DefaultWhisperModelService aiService,
+    AudioPipeline pipeline,
+    ILogger<WhisperInferenceWorker> logger) : BackgroundService
 {
-    private const int BufferCountForInference = 10; // Samla ca 1 sek (10 * 100ms)
+    private readonly ArrayPool<float> _pool = ArrayPool<float>.Shared;
 
     protected override async Task ExecuteAsync(CancellationToken ct)
     {
-        await modelService.EnsureModelReadyAsync(WhisperModelType.Tiny, ct);
-        using var processor = modelService.CreateProcessor();
+        await aiService.EnsureModelReadyAsync(WhisperModelType.Tiny, ct);
+        using var processor = aiService.CreateProcessor(); //Create AI engine Whisper.NET processor.
 
-        // Vi hyr EN stor buffert för hela livslängden (3 sekunders utrymme)
-        float[] sessionBuffer = ArrayPool<float>.Shared.Rent(16000 * 3);
+        const int sessionSize = 48000; // 3 sekunder @ 16kHz
+        float[] sessionBuffer = _pool.Rent(sessionSize);
         int currentPos = 0;
+
+        logger.LogInformation("[Engine] Inference Loop Started. Listening...");
 
         try
         {
-            // Denna loop är motorns hjärta
-            await foreach (var buffer in pipeline.Reader.ReadAllAsync(ct))
-            {
-                try
-                {
-                    // 1. Kopiera in småpaketet i vår fasta sessionBuffer (Zero Allocation)
-                    int toCopy = Math.Min(buffer.Length, sessionBuffer.Length - currentPos);
-                    buffer.AsSpan(0, toCopy).CopyTo(sessionBuffer.AsSpan(currentPos));
-                    currentPos += toCopy;
+            logger.LogInformation("[Engine] Start loop");
 
-                    logger.LogDebug("Received audio buffer of length {length}", buffer.Length);
-                    
-                    // 2. Har vi samlat 1 sekund? (16000 samples)
-                    if (currentPos >= 16000)
-                    {
-                        // 3. Kör Whisper på den exakta delen av bufferten
-                        await foreach (var result in processor.ProcessAsync(sessionBuffer.AsMemory(0, currentPos), ct))
-                        {
-                           
-                            if (!string.IsNullOrWhiteSpace(result.Text))
-                                logger.LogInformation("[AI] Intent detected: {text}", result.Text.Trim());
-                        }
-                        currentPos = 0; // "Reset" utan att kasta bort arrayen
-                    }
-                }
-                finally
+            // DENNA LOOP körs varje gång ett nytt ljudpaket kommer från mikrofonen
+            await foreach (var segment in pipeline.Reader.ReadAllAsync(ct))
+            {
+                logger.LogDebug("Received segment: {len}", segment.Length);
+
+
+                // 1. KOPIERA in ljudet i vår stora 3-sekunders hink
+                int toCopy = Math.Min(segment.Length, sessionSize - currentPos);
+                segment.Buffer.AsSpan(0, toCopy).CopyTo(sessionBuffer.AsSpan(currentPos));
+
+                // 2. ÖKA POSITIONEN (Nu blir currentPos större!)
+                currentPos += toCopy;
+
+                // 3. KOLLA OM HINKEN ÄR FULL (Här inne sker magin)
+                if (currentPos >= sessionSize)
                 {
-                    // 4. Returnera det lilla paketet OMEDELBART till poolen
-                    ArrayPool<float>.Shared.Return(buffer);
+                    // Nu skickar vi 3 sekunder till AI:n
+                    Console.WriteLine($"[DEBUG] Executing AI on {currentPos} samples...");
+
+                    await foreach (var result in processor.ProcessAsync(sessionBuffer.AsMemory(0, currentPos), ct))
+                    {
+                        if (!string.IsNullOrWhiteSpace(result.Text))
+                        {
+                            Console.WriteLine($"[WHISPER RAW]: {result.Text}");
+                        }
+                    }
+
+                    // 4. NOLLSTÄLL för nästa 3 sekunder
+                    currentPos = 0;
                 }
+
+                // Returnera alltid det lilla segmentet till poolen direkt
+                _pool.Return(segment.Buffer);
             }
         }
         finally
         {
-            ArrayPool<float>.Shared.Return(sessionBuffer);
+            logger.LogInformation("[Engine] finally");
+            _pool.Return(sessionBuffer);
         }
     }
 }

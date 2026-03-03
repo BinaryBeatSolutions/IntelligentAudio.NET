@@ -7,7 +7,7 @@ public static class AudioAnalysis
     /// Vectorized RMS calculation using SIMD (Vector<float>).
     /// Zero allocations, near-zero CPU impact.
     /// </summary>
-    public static float CalculateRms(ReadOnlySpan<short> samples)
+    public static float CalculateRms(ReadOnlySpan<float> samples)
     {
         if (samples.IsEmpty) return 0;
 
@@ -42,6 +42,9 @@ public static class AudioAnalysis
 
         return (float)Math.Sqrt(sumOfSquares / samples.Length);
     }
+
+
+
 
     /// <summary>
     /// High-performance Linear Resampler (44.1 -> 16).
