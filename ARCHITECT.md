@@ -46,10 +46,11 @@
 - ALWAYS reason step-by-step (Chain-of-Thought).
 - ALWAYS perform a "Latency & Allocation Analysis" before providing code.
 - If a suggestion causes GC pressure, FLAG IT and suggest a non-allocating alternative.
-- Prioritize C# 13 features (Ref structs, Interceptors, etc.).
+- Prioritize c# 13 and c#14 features (Ref structs, Interceptors, etc.).
 
 ## Library Specifics
 
 - **OSC Library:** MUST use `BuildSoft.OscCore`.
 
-- **Implementation Detail:** Focus on `OscServer` and `OscClient`. Use non-allocating methods for message parsing (e.g., `ReadValueTranscribe<T>`).
+- **Implementation Detail:** Focus on `OscServer` and `OscClient`.
+- Use non-allocating methods for message parsing (e.g., `ReadValueTranscribe<T>`).
