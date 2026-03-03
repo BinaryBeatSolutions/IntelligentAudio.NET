@@ -1,4 +1,5 @@
 ﻿
+
 namespace IntelligentAudio.Infrastructure.Factories;
 
 public class DefaultDawClientFactory(

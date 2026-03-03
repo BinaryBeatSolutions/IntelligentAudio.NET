@@ -5,9 +5,13 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
-
+	<ItemGroup>
+		<PackageReference Include="BuildSoft.OscCore" Version="1.2.1.1" />
+	</ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\IntelligentAudio.Contracts\IntelligentAudio.Contracts.csproj" />
+    <ProjectReference Include="..\..\IntelligentAudio.Integrations.Common\IntelligentAudio.Integrations.Common.csproj" />
+    <ProjectReference Include="..\IntelligentAudio.MusicTheory\IntelligentAudio.MusicTheory.csproj" />
   </ItemGroup>
 
 </Project>

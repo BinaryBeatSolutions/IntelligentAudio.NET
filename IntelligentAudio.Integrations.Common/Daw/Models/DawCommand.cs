@@ -1,4 +1,6 @@
-﻿namespace IntelligentAudio.Contracts.Models;
+﻿
+
+namespace IntelligentAudio.Integrations.Common.Daw.Models;
 
 /// <summary>
 /// Representerar ett generiskt kommando som skickas till en DAW.
@@ -10,3 +12,5 @@ public record DawCommand(
     DawAction Action,
     int? TargetIndex = null,
     object? Value = null);
+
+

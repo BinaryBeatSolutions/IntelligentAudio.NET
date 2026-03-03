@@ -21,6 +21,10 @@ global using IntelligentAudio.Infrastructure.Communication;
 global using IntelligentAudio.Contracts.Events;
 global using IntelligentAudio.Engine.Services;
 global using IntelligentAudio.Contracts.Interfaces;
-global using IntelligentAudio.Contracts.Models;
 global using IntelligentAudio.Infrastructure.Extensions;
+global using IntelligentAudio.Integrations.Common.Daw;
+global using IntelligentAudio.Integrations.Common.Daw.Models;
+global using IntelligentAudio.Integrations.Common.Daw.Interfaces;
 
+global using IntelligentAudio.MusicTheory;
+global using IntelligentAudio.MusicTheory.Models;

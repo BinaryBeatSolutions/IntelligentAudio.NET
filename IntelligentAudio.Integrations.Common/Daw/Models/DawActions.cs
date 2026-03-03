@@ -1,5 +1,7 @@
 ﻿
-namespace IntelligentAudio.Contracts.Models;
+
+namespace IntelligentAudio.Integrations.Common.Daw.Models;
+
 
 /// <summary>
 /// Default events. 

@@ -1,10 +1,9 @@
-﻿
-
-using Whisper.net;
+﻿using Whisper.net;
 
 namespace IntelligentAudio.Engine.Services;
 
 public sealed class WhisperInferenceWorker(
+    IEnumerable<IIntentHandler> intentHandlers, // Hämtar alla (t.ex. MusicTheoryHandler)
     DefaultWhisperModelService aiService,
     AudioPipeline pipeline,
     ILogger<WhisperInferenceWorker> logger) : BackgroundService
@@ -16,42 +15,43 @@ public sealed class WhisperInferenceWorker(
         await aiService.EnsureModelReadyAsync(WhisperModelType.Tiny, ct);
         using var processor = aiService.CreateProcessor();
 
-        const int sessionSize = 48000; // 3 sekunder @ 16kHz
+        const int sessionSize = 48000;
         float[] sessionBuffer = _pool.Rent(sessionSize);
         int currentPos = 0;
 
         try
         {
-            await foreach (var segment in pipeline.Reader.ReadAllAsync(ct))
+            await foreach (var audioBuffer in pipeline.Reader.ReadAllAsync(ct))
             {
-                // 1. Kopiera in i 3-sekunders-hinken
-                int toCopy = Math.Min(segment.Length, sessionSize - currentPos);
-                Array.Copy(segment, 0, sessionBuffer, currentPos, toCopy);
+                int toCopy = Math.Min(audioBuffer.Length, sessionSize - currentPos);
+                Array.Copy(audioBuffer, 0, sessionBuffer, currentPos, toCopy);
                 currentPos += toCopy;
+                _pool.Return(audioBuffer);
 
-                // 2. Lämna tillbaka segmentet till poolen (Viktigt: efter kopiering!)
-                _pool.Return(segment);
-
-                // 3. Har vi fyllt 3 sekunder?
                 if (currentPos >= sessionSize)
                 {
-                    logger.LogInformation("[Engine] 3s Buffer Full. Sending to Whisper...");
-
-                    // Skicka EXAKT sessionSize samples till Whisper
-                    var audioView = sessionBuffer.AsMemory(0, sessionSize);
-
-                    await foreach (var result in processor.ProcessAsync(audioView, ct))
+                    // Whisper processar 3-sekundersfönstret
+                    await foreach (var result in processor.ProcessAsync(sessionBuffer.AsMemory(0, sessionSize), ct))
                     {
-                        if (!string.IsNullOrWhiteSpace(result.Text))
+                        var text = result.Text.Trim();
+                        if (string.IsNullOrWhiteSpace(text)) continue;
+
+                        logger.LogInformation("[WHISPER RAW]: {text}", text);
+
+                        // --- HÄR ÄR DEN NYA MAGIN ---
+                        // Vi frågar alla handlare (t.ex. din MusicTheoryHandler) om de vill ha texten
+                        foreach (var handler in intentHandlers)
                         {
-                            // HÄR SKALL SVARET KOMMA
-                            Console.WriteLine($"[WHISPER RAW]: {result.Text.Trim()}");
+                            if (handler.CanHandle(text))
+                            {
+                                // Körs asynkront så vi inte blockerar nästa ljudsegment
+                                await handler.HandleAsync(text, ct);
+                            }
                         }
+                        // ----------------------------
                     }
 
-                    // 4. Nollställ positionen för nästa 3 sekunder
                     currentPos = 0;
-                    // Valfritt: Rensa bufferten för att undvika "eko" från förra vändan
                     Array.Clear(sessionBuffer, 0, sessionSize);
                 }
             }

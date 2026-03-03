@@ -17,6 +17,7 @@
   <ItemGroup>
     <ProjectReference Include="..\IntelligentAudio.Contracts\IntelligentAudio.Contracts.csproj" />
     <ProjectReference Include="..\IntelligentAudio.Engine\IntelligentAudio.Engine.csproj" />
+    <ProjectReference Include="..\IntelligentAudio.Integrations.Common\IntelligentAudio.Integrations.Common.csproj" />
   </ItemGroup>
 
   <ItemGroup>

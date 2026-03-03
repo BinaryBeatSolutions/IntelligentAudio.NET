@@ -1,6 +1,6 @@
 ﻿
 
-namespace IntelligentAudio.Contracts.Interfaces;
+namespace IntelligentAudio.Integrations.Common.Daw.Interfaces;
 
 public interface IDawClient : IDisposable
 {

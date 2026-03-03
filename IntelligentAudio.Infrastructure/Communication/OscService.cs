@@ -59,18 +59,18 @@ public class OscService(
             }
         });
 
-        //Main loop
-        await foreach (var @event in eventAggregator.Subscribe<ChordDetectedEvent>(ct))
-        {
-            /*
-             * Her we can add serveral types, like send play, stop etc.
-             */
-            var client = clientFactory.GetClient(@event.ClientId);
-            if (client is not null)
-            {
-                await client.SendChordAsync(@event.Chord);
-            }
-        }
+        //////Main loop
+        //await foreach (var @event in eventAggregator.Subscribe<ChordDetectedEvent>(ct))
+        //{
+        //    /*
+        //     * Her we can add serveral types, like send play, stop etc.
+        //     */
+        //    var client = clientFactory.GetClient(@event.ClientId);
+        //    if (client is not null)
+        //    {
+        //        await client.SendChordAsync(@event.Chord);
+        //    }
+        //}
     }
 
     /// <summary>

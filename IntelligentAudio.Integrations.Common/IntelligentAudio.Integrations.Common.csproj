@@ -7,7 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\IntelligentAudio.Contracts\IntelligentAudio.Contracts.csproj" />
+    <ProjectReference Include="..\IntelligentAudio.Contracts\IntelligentAudio.Contracts.csproj" />
+    <ProjectReference Include="..\Plugins\IntelligentAudio.MusicTheory\IntelligentAudio.MusicTheory.csproj" />
   </ItemGroup>
 
 </Project>

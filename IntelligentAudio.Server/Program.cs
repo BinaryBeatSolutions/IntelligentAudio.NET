@@ -1,6 +1,10 @@
 ﻿
 
 
+
+using IntelligentAudio.MusicTheory;
+using IntelligentAudio.Server.Handlers.Music;
+
 var builder = Host.CreateApplicationBuilder(args);
 
 // Register the pipeline as a Singleton (there is only one pipe in the entire system)
@@ -13,6 +17,8 @@ builder.Services.AddHostedService<OscService>();
 builder.Services.AddSingleton<IAudioBufferProvider, DefaultAudioBufferProviderImpl>();
 builder.Services.AddSingleton<DefaultWhisperModelService>();
 builder.Services.AddHostedService<WhisperInferenceWorker>();
+builder.Services.AddSingleton<ChordFactory>();
+builder.Services.AddTransient<IIntentHandler, MusicTheoryHandler>();
 
 //Windows and MacOS so far.
 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)){builder.Services.AddSingleton<IAudioStreamSource, WindowsAudioSource>();}

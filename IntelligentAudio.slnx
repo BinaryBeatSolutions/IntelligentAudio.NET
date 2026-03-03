@@ -1,5 +1,6 @@
 <Solution>
   <Folder Name="/Plugins/">
+    <Project Path="Plugins/IntelligentAudio.Integrations.Ableton/IntelligentAudio.Integrations.Ableton.csproj" Id="a9b90b53-2c44-4ea0-a1b9-29578604c318" />
     <Project Path="Plugins/IntelligentAudio.MusicTheory/IntelligentAudio.MusicTheory.csproj" Id="67eedfac-ec21-44b5-acc1-7dd419a1809a" />
   </Folder>
   <Folder Name="/_SolutionItems/">
@@ -7,6 +8,7 @@
   </Folder>
   <Project Path="IntelligentAudio.Engine/IntelligentAudio.Engine.csproj" />
   <Project Path="IntelligentAudio.Infrastructure/IntelligentAudio.Infrastructure.csproj" />
+  <Project Path="IntelligentAudio.Integrations.Common/IntelligentAudio.Integrations.Common.csproj" Id="ed83a9e2-cf5e-4c4e-aeae-a0a6cfb9f4bd" />
   <Project Path="IntelligentAudio.Server/IntelligentAudio.Server.csproj" />
   <Folder Name="/_SolutionItems/AI/">
     <File Path="ARCHITECT.md" />
