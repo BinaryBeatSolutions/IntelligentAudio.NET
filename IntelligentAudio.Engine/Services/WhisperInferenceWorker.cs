@@ -14,56 +14,50 @@ public sealed class WhisperInferenceWorker(
     protected override async Task ExecuteAsync(CancellationToken ct)
     {
         await aiService.EnsureModelReadyAsync(WhisperModelType.Tiny, ct);
-        using var processor = aiService.CreateProcessor(); //Create AI engine Whisper.NET processor.
+        using var processor = aiService.CreateProcessor();
 
         const int sessionSize = 48000; // 3 sekunder @ 16kHz
         float[] sessionBuffer = _pool.Rent(sessionSize);
         int currentPos = 0;
 
-        logger.LogInformation("[Engine] Inference Loop Started. Listening...");
-
         try
         {
-            logger.LogInformation("[Engine] Start loop");
-
-            // DENNA LOOP körs varje gång ett nytt ljudpaket kommer från mikrofonen
             await foreach (var segment in pipeline.Reader.ReadAllAsync(ct))
             {
-                logger.LogDebug("Received segment: {len}", segment.Length);
-
-
-                // 1. KOPIERA in ljudet i vår stora 3-sekunders hink
+                // 1. Kopiera in i 3-sekunders-hinken
                 int toCopy = Math.Min(segment.Length, sessionSize - currentPos);
-                segment.Buffer.AsSpan(0, toCopy).CopyTo(sessionBuffer.AsSpan(currentPos));
-
-                // 2. ÖKA POSITIONEN (Nu blir currentPos större!)
+                Array.Copy(segment, 0, sessionBuffer, currentPos, toCopy);
                 currentPos += toCopy;
 
-                // 3. KOLLA OM HINKEN ÄR FULL (Här inne sker magin)
+                // 2. Lämna tillbaka segmentet till poolen (Viktigt: efter kopiering!)
+                _pool.Return(segment);
+
+                // 3. Har vi fyllt 3 sekunder?
                 if (currentPos >= sessionSize)
                 {
-                    // Nu skickar vi 3 sekunder till AI:n
-                    Console.WriteLine($"[DEBUG] Executing AI on {currentPos} samples...");
+                    logger.LogInformation("[Engine] 3s Buffer Full. Sending to Whisper...");
 
-                    await foreach (var result in processor.ProcessAsync(sessionBuffer.AsMemory(0, currentPos), ct))
+                    // Skicka EXAKT sessionSize samples till Whisper
+                    var audioView = sessionBuffer.AsMemory(0, sessionSize);
+
+                    await foreach (var result in processor.ProcessAsync(audioView, ct))
                     {
                         if (!string.IsNullOrWhiteSpace(result.Text))
                         {
-                            Console.WriteLine($"[WHISPER RAW]: {result.Text}");
+                            // HÄR SKALL SVARET KOMMA
+                            Console.WriteLine($"[WHISPER RAW]: {result.Text.Trim()}");
                         }
                     }
 
-                    // 4. NOLLSTÄLL för nästa 3 sekunder
+                    // 4. Nollställ positionen för nästa 3 sekunder
                     currentPos = 0;
+                    // Valfritt: Rensa bufferten för att undvika "eko" från förra vändan
+                    Array.Clear(sessionBuffer, 0, sessionSize);
                 }
-
-                // Returnera alltid det lilla segmentet till poolen direkt
-                _pool.Return(segment.Buffer);
             }
         }
         finally
         {
-            logger.LogInformation("[Engine] finally");
             _pool.Return(sessionBuffer);
         }
     }

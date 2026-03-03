@@ -1,6 +1,6 @@
 ﻿
 
-namespace IntelligentAudio.Contracts;
+namespace IntelligentAudio.Contracts.Interfaces;
 
 public interface IAudioStreamSource
 {

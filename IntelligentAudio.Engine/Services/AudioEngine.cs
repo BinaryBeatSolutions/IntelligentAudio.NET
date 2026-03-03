@@ -18,7 +18,7 @@ public class AudioEngine(
             await foreach (var segment in pipeline.Reader.ReadAllAsync(stoppingToken))
             {
                 // Skapa en Span som bara täcker den faktiska ljuddatan
-                Span<float> audioSpan = segment.Buffer.AsSpan(0, segment.Length);
+                Span<float> audioSpan = segment.AsSpan(0, segment.Length);
 
                 // 1. Processa ljudet (HighPass, NoiseGate etc.)
                 foreach (var processor in processors)
@@ -31,14 +31,14 @@ public class AudioEngine(
                 // För lägst latens och stabilitet: await här.
                 try
                 {
-                    await aiService.ProcessAudioAsync(segment.Buffer, segment.Length, stoppingToken);
+                    await aiService.ProcessAudioAsync(segment, segment.Length, stoppingToken);
                     logger.LogInformation("aiService.ProcessAudioAsync");
                 }
                 finally
                 {
                     // 3. NU lämnar vi tillbaka bufferten till poolen.
                     // Ingen annan får röra denna array efter denna rad!
-                    ArrayPool<float>.Shared.Return(segment.Buffer);
+                    ArrayPool<float>.Shared.Return(segment);
                 }
             }
         }
