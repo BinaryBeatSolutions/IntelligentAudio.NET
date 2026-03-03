@@ -1,4 +1,7 @@
 <Solution>
+  <Folder Name="/Plugins/">
+    <Project Path="Plugins/IntelligentAudio.MusicTheory/IntelligentAudio.MusicTheory.csproj" Id="67eedfac-ec21-44b5-acc1-7dd419a1809a" />
+  </Folder>
   <Folder Name="/_SolutionItems/">
     <File Path="Readme.md" />
   </Folder>
