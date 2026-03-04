@@ -2,6 +2,8 @@
 
 [.NET 10 LTS] | [C# 14] | [License: MIT] | [Ableton] | [FL-Studio] | [LOGIC PRO]
 
+For latest info, visit [IntelligentAudio.NET](https://intelligentAudio.Net)
+
 **IntelligentAudio.NET** is a high-performance, AI-driven engine designed to bridge the gap between
 musical intent and DAW execution. Built on the **.NET 10 LTS** stack, it utilizes state-of-the-art
 speech-to-chord inference to provide hands-free control for music producers.
