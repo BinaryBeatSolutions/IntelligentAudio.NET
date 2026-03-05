@@ -1,40 +1,43 @@
 ﻿
-
 namespace IntelligentAudio.Infrastructure.Factories;
 
-public class DefaultDawClientFactory(
-    ILoggerFactory loggerFactory,
-    ILogger<DefaultDawClientFactory> logger) : IDawClientFactory
+
+public sealed class DefaultDawClientFactory : IDawClientFactory
 {
     private readonly ConcurrentDictionary<Guid, IDawClient> _clients = new();
+    private readonly IDawClientProvider[] _providers; // Array för snabb iteration utan alloc
+
+    public DefaultDawClientFactory(IEnumerable<IDawClientProvider> providers)
+    {
+        _providers = providers.ToArray(); // Görs bara en gång vid start
+    }
 
     public IDawClient CreateClient(Guid clientId, int port, string dawType)
     {
-        return _clients.GetOrAdd(clientId, id =>
+        // Vi skickar in (this, port, dawType) som state
+        return _clients.GetOrAdd(clientId, static (id, state) =>
         {
-            logger.LogInformation("Creates new {DawType}-client (ID: {Id}) on port {Port}",
-                dawType.ToUpper(), id, port);
+            // Packa upp state utan att allokera
+            var (factory, p, type) = state;
 
-            // Vi skapar en specifik logger för den nya klient-instansen
-            var clientLogger = loggerFactory.CreateLogger<OscAbletonClient>();
-
-            return dawType.ToLower() switch
+            // Använd for-loop för att undvika IEnumerable-enumerator (allokering)
+            var providers = factory._providers;
+            for (int i = 0; i < providers.Length; i++)
             {
-                "ableton" => new OscAbletonClient(id, "127.0.0.1", port, clientLogger),
-                // "flstudio" => new MidiFlStudioClient(id, loggerFactory.CreateLogger<MidiFlStudioClient>()),
-                _ => throw new NotSupportedException($"DAW-typ '{dawType}' not supported yet.")
-            };
-        });
+                if (providers[i].CanHandle(type))
+                {
+                    return providers[i].CreateInstance(id, p);
+                }
+            }
+
+            throw new NotSupportedException($"DAW {type} not supported.");
+        }, (this, port, dawType)); // State-tuple
     }
 
     public IDawClient? GetClient(Guid clientId)
     {
-        if (_clients.TryGetValue(clientId, out var client))
-        {
-            return client;
-        }
-
-        logger.LogWarning("Client id: {Id} dont exist.", clientId);
-        return null;
+        // TryGetValue på en Guid-nyckel är O(1) och genererar noll heap-skräp.
+        // Vi returnerar null om klienten inte finns (t.ex. om den kopplat ifrån).
+        return _clients.TryGetValue(clientId, out var client) ? client : null;
     }
 }
