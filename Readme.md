@@ -10,6 +10,16 @@ speech-to-chord inference to provide hands-free control for music producers.
 
 ---
 
+## The IIntentHandler Contract
+
+The bridge between agnostic audio processing and domain-specific action.
+
+- **Isolation**: Handlers are purely reactive. They consume text/intent payloads without knowing the source.
+- **Lock-Free Execution**: Powered by `System.Threading.Channels`, ensuring that heavy domain logic (like chord math) never blocks the audio ingestion thread.
+- **Extensibility**: Adding new capabilities (e.g., VST control, Lighting, AI Logging) only requires a new implementation of `IIntentHandler`.
+
+---
+
 ## Architectural Excellence
 
     This version represents a complete architectural rebuild, moving away from legacy Reflection-based systems to a modern,

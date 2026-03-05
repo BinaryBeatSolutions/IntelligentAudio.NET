@@ -17,6 +17,14 @@
   - Use `ArrayPool<T>` or `ObjectPool` for recurring objects.
   - Prohibit `foreach` on collections that cause heap allocation; use `for` or `Span` based iteration.
 
+## The IIntentHandler Contract
+
+The bridge between agnostic audio processing and domain-specific action.
+
+- **Isolation**: Handlers are purely reactive. They consume text/intent payloads without knowing the source.
+- **Lock-Free Execution**: Powered by `System.Threading.Channels`, ensuring that heavy domain logic (like chord math) never blocks the audio ingestion thread.
+- **Extensibility**: Adding new capabilities (e.g., VST control, Lighting, AI Logging) only requires a new implementation of `IIntentHandler`.
+
 ## Architectural Principles
 
 1. **Decoupled Design:** DAW-specific logic must be abstracted via interfaces.
