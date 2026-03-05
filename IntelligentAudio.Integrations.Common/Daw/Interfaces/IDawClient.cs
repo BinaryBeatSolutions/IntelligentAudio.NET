@@ -6,8 +6,10 @@ public interface IDawClient : IDisposable
 {
     Guid ClientId { get; }
     string Name { get; }
-    int Port => 0;
+    int Port { get; }
 
-    Task SendChordAsync(ChordInfo chord);
-    Task SendCommandAsync(DawCommand command);
+    // ValueTask är guld i .NET 10 för högpresterande I/O
+    ValueTask SendChordAsync(ChordInfo chord);
+    ValueTask SendCommandAsync(DawCommand command);
 }
+

@@ -3,26 +3,27 @@ using Whisper.net.Ggml;
 
 namespace IntelligentAudio.Server.Extensions;
 
+//-------------------------------------------------- REMOVE ---------------------------------------------------------
 
-public class PathResolver
-{
+//public class PathResolver
+//{
 
-    private readonly ILogger<PathResolver> _logger;
+//    private readonly ILogger<PathResolver> _logger;
 
-    public PathResolver(ILogger<PathResolver> logger)
-    {
+//    public PathResolver(ILogger<PathResolver> logger)
+//    {
 
-        _logger = logger;
-    }
+//        _logger = logger;
+//    }
 
-    public string Resolve(string relativePath)
-    {
-        var baseDir = AppDomain.CurrentDomain.BaseDirectory;
-        var path = Path.GetFullPath(Path.Combine(baseDir, relativePath));
-        _logger.LogDebug("[IntelligentAudio.NET] Resolved path {Relative} -> {Absolute}", relativePath, path);
-        return path;
-    }
-}
+//    public string Resolve(string relativePath)
+//    {
+//        var baseDir = AppDomain.CurrentDomain.BaseDirectory;
+//        var path = Path.GetFullPath(Path.Combine(baseDir, relativePath));
+//        _logger.LogDebug("[IntelligentAudio.NET] Resolved path {Relative} -> {Absolute}", relativePath, path);
+//        return path;
+//    }
+//}
 
 
 

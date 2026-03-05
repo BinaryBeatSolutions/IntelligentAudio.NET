@@ -2,6 +2,8 @@
 
 
 
+using IntelligentAudio.Infrastructure.Controllers;
+using IntelligentAudio.Infrastructure.Services;
 using IntelligentAudio.MusicTheory;
 using IntelligentAudio.Server.Handlers.Music;
 
@@ -19,6 +21,11 @@ builder.Services.AddSingleton<DefaultWhisperModelService>();
 builder.Services.AddHostedService<WhisperInferenceWorker>();
 builder.Services.AddSingleton<ChordFactory>();
 builder.Services.AddTransient<IIntentHandler, MusicTheoryHandler>();
+builder.Services.AddSingleton<IDawClientFactory, DefaultDawClientFactory>();
+
+builder.Services.AddSingleton<IClientManager, DefaultClientManagerImpl>();
+builder.Services.AddSingleton<IDawCommandController, DefaultDawCommandControllerImpl>();
+builder.Services.AddSingleton<IHandshakeListener, DefaultHandshakeListenerImpl>();
 
 //Windows and MacOS so far.
 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)){builder.Services.AddSingleton<IAudioStreamSource, WindowsAudioSource>();}

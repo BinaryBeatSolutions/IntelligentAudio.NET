@@ -14,5 +14,5 @@ public interface IIntentReceiver : IDisposable
     /// Tar emot ett generiskt objekt (t.ex. ChordInfo eller DawCommand).
     /// Det är upp till implementationen att veta hur datan ska hanteras.
     /// </summary>
-    Task ReceiveAsync<T>(T intent, CancellationToken ct) where T : class;
+    ValueTask ReceiveAsync<T>(T intent, CancellationToken ct) where T : class;
 }

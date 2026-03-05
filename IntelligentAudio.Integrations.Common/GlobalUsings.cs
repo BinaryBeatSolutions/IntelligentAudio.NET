@@ -11,5 +11,7 @@ global using IntelligentAudio.Contracts;
 global using IntelligentAudio.Integrations.Common.Daw.Models;
 global using IntelligentAudio.MusicTheory;
 global using IntelligentAudio.MusicTheory.Models;
+global using IntelligentAudio.Integrations.Common.Daw;
+global using IntelligentAudio.Integrations.Common.Daw.Interfaces;
 
 

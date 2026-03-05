@@ -3,7 +3,7 @@ using BuildSoft.OscCore;
 
 namespace IntelligentAudio.Integrations.Ableton;
 
-public class AbletonOscController : IDawController
+public class AbletonOscController : IDawCommandController
 {
     private readonly OscClient _client;
 
@@ -30,5 +30,10 @@ public class AbletonOscController : IDawController
         }
 
         await Task.CompletedTask;
+    }
+
+    public ValueTask ExecuteAsync(Guid clientId, DawCommand command)
+    {
+        throw new NotImplementedException();
     }
 }

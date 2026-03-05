@@ -7,13 +7,13 @@ public class VstBridgeClient(Guid clientId, int port) : IDawClient
     
     public int Port => port;
 
-    public async Task SendChordAsync(ChordInfo chord)
+    public async ValueTask SendChordAsync(ChordInfo chord)
     {
         // Prata med VST-instansen via Localhost
         await Task.CompletedTask;
     }
 
-    public async Task SendCommandAsync(DawCommand command)
+    public async ValueTask SendCommandAsync(DawCommand command)
     {
         await Task.CompletedTask;
     }

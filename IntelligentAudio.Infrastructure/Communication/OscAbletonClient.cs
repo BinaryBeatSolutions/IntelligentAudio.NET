@@ -30,7 +30,7 @@ public class OscAbletonClient(
     /// </summary>
     /// <param name="chord"></param>
     /// <returns></returns>
-    public async Task SendChordAsync(ChordInfo chord)
+    public async ValueTask SendChordAsync(ChordInfo chord)
     {
         if (chord is null) return;
 
@@ -54,7 +54,7 @@ public class OscAbletonClient(
     /// </summary>
     /// <param name="command"></param>
     /// <returns></returns>
-    public async Task SendCommandAsync(DawCommand command)
+    public async ValueTask SendCommandAsync(DawCommand command)
     {
         try
         {

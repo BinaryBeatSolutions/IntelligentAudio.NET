@@ -1,4 +1,5 @@
 ﻿using BuildSoft.OscCore;
+using IntelligentAudio.Contracts.Models;
 
 namespace IntelligentAudio.Infrastructure.Communication;
 
@@ -46,7 +47,7 @@ public class OscService(
                         serverSendPort = ((IPEndPoint)tempSocket.Client.LocalEndPoint).Port;
                     }
                  
-                    var client = clientFactory.CreateClient(clientId, serverSendPort, "ableton");
+                    var client = clientFactory.CreateClient(clientId, serverSendPort, DawType.Ableton);
                     var sender = new OscClient("127.0.0.1", serverSendPort);
                     sender.Send("/ia/handshake/reply", serverSendPort);
 

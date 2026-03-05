@@ -1,4 +1,6 @@
 ﻿
+using IntelligentAudio.Contracts.Models;
+
 namespace IntelligentAudio.Infrastructure.Factories;
 
 
@@ -12,7 +14,7 @@ public sealed class DefaultDawClientFactory : IDawClientFactory
         _providers = providers.ToArray(); // Görs bara en gång vid start
     }
 
-    public IDawClient CreateClient(Guid clientId, int port, string dawType)
+    public IDawClient CreateClient(Guid clientId, int port, DawType dawType)
     {
         // Vi skickar in (this, port, dawType) som state
         return _clients.GetOrAdd(clientId, static (id, state) =>
@@ -30,14 +32,12 @@ public sealed class DefaultDawClientFactory : IDawClientFactory
                 }
             }
 
-            throw new NotSupportedException($"DAW {type} not supported.");
+            return null;
         }, (this, port, dawType)); // State-tuple
     }
 
     public IDawClient? GetClient(Guid clientId)
     {
-        // TryGetValue på en Guid-nyckel är O(1) och genererar noll heap-skräp.
-        // Vi returnerar null om klienten inte finns (t.ex. om den kopplat ifrån).
         return _clients.TryGetValue(clientId, out var client) ? client : null;
     }
 }

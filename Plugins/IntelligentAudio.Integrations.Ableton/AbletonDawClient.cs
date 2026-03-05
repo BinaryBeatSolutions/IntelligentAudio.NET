@@ -1,82 +1,59 @@
-﻿
+﻿namespace IntelligentAudio.Integrations.Ableton;
 
 using BuildSoft.OscCore;
+using IntelligentAudio.Contracts.Interfaces;
+using IntelligentAudio.Contracts.Models;
 using IntelligentAudio.MusicTheory.Models;
+using Microsoft.Extensions.Logging;
 
-namespace IntelligentAudio.Integrations.Ableton;
-
-public sealed class AbletonDawClient : IIntentReceiver, IDawClient
+public sealed partial class AbletonDawClient : IDawClient
 {
     private readonly OscClient _oscClient;
     private readonly ILogger<AbletonDawClient> _logger;
 
-    public Guid Id { get; } = Guid.NewGuid();
+    // Cacheade OSC-adresser (Zero-Alloc)
+    private static readonly string AddrPlay = "/live/play";
+    private static readonly string AddrStop = "/live/stop";
+    private static readonly string AddrRecord = "/live/record";
+
+    public Guid ClientId { get; }
     public string Name => "Ableton Live";
     public int Port { get; }
-    public bool IsConnected => _oscClient != null;
 
-    public Guid ClientId => throw new NotImplementedException();
-
-    public AbletonDawClient(string ip, int port, ILogger<AbletonDawClient> logger)
+    public AbletonDawClient(Guid clientId, int port, ILogger<AbletonDawClient> logger)
     {
+        ClientId = clientId;
         Port = port;
         _logger = logger;
-        // Här skapas den faktiska OSC-anslutningen (BuildSoft.OscCore)
-        _oscClient = new OscClient(ip, port);
+        _oscClient = new OscClient("127.0.0.1", port);
     }
 
-    /// <summary>
-    /// Den agnostiska ingången för motorn. 
-    /// Motorn skickar ett "paket" (T), och denna metod packar upp det.
-    /// </summary>
-    public async Task ReceiveAsync<T>(T intent, CancellationToken ct) where T : class
+    public ValueTask SendCommandAsync(DawCommand command)
     {
-        if (intent is DawCommand command)
+        // Snabb mappning utan nya sträng-allokeringar
+        string? address = command.Action switch
         {
-            await SendCommandAsync(command);
-        }
-        else if (intent is ChordInfo chord)
-        {
-            await SendChordAsync(chord);
-        }
-        else
-        {
-            _logger.LogWarning("[AbletonClient] Unknown intent type: {type}", typeof(T).Name);
-        }
-    }
-
-    public async Task SendCommandAsync(DawCommand command)
-    {
-        // Mappa DawAction till specifika OSC-adresser i Ableton
-        var address = command.Action switch
-        {
-            DawAction.Play => "/live/play",
-            DawAction.Stop => "/live/stop",
-            DawAction.Record => "/live/record",
+            DawAction.Play => AddrPlay,
+            DawAction.Stop => AddrStop,
+            DawAction.Record => AddrRecord,
             _ => null
         };
 
-        if (address != null)
+        if (address is not null)
         {
-            _logger.LogDebug("[OSC] Sending {addr} to Ableton on port {port}", address, Port);
+            // BuildSoft.OscCore skickar direkt utan boxing
             _oscClient.Send(address, 1);
         }
-        await Task.CompletedTask;
+
+        return ValueTask.CompletedTask;
     }
 
-    public async Task SendChordAsync(ChordInfo chord)
+    public ValueTask SendChordAsync(ChordInfo chord)
     {
-        // Här kan vi skicka ackordnamnet till en text-display i din .amxd
+        // Skicka ackordnamn till din .amxd (matchar din bild)
         _oscClient.Send("/ia/chord/name", chord.Name);
-
-        // Eller skicka råa MIDI-noter om din amxd förväntar sig det
-        // _oscClient.Send("/ia/chord/notes", chord.MidiNotes);
-
-        await Task.CompletedTask;
+        return ValueTask.CompletedTask;
     }
 
-    public void Dispose()
-    {
-        _oscClient?.Dispose();
-    }
+    public void Dispose() => _oscClient?.Dispose();
 }
