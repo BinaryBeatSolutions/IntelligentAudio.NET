@@ -2,25 +2,25 @@
 namespace IntelligentAudio.Contracts.Interfaces;
 
 /// <summary>
-/// Definierar en mottagare för tolkad text från AI-motorn.
-/// Gör det möjligt att separera röststyrning från musikteori och DAW-kontroll.
+/// Defines a receiver for the recognized text from the AI ​​engine.
+/// Allows for the separation of voice control from music theory and DAW control or other apps.
 /// </summary>
 public interface IIntentHandler
 {
     /// <summary>
-    /// Avgör om denna handler kan hantera den identifierade texten.
-    /// Exempel: "C major" -> return true (MusicTheoryHandler)
+    /// Determines whether this handler can handle the recognized text.
+    /// Example: "C major" -> return true (MusicTheoryHandler)
     /// </summary>
     bool CanHandle(string text);
 
     /// <summary>
-    /// Utför den logiska handlingen kopplad till texten.
+    /// Performs the logical action associated with the text.
     /// </summary>
     Task HandleAsync(string text, CancellationToken ct);
 
     /// <summary>
-    /// Anger i vilken ordning handlers ska köras om flera matchar.
-    /// Lågt värde = Körs först.
+    /// Specifies the order in which handlers should be executed if multiple matches are found.
+    /// Low value = Execute first.
     /// </summary>
     int Order => 0;
 }

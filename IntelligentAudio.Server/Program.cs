@@ -1,11 +1,8 @@
-﻿
+﻿/*
+ * 
+ */
 
-
-
-using IntelligentAudio.Infrastructure.Controllers;
-using IntelligentAudio.Infrastructure.Services;
-using IntelligentAudio.MusicTheory;
-using IntelligentAudio.Server.Handlers.Music;
+using IntelligentAudio.Contracts.Models;
 
 var builder = Host.CreateApplicationBuilder(args);
 
@@ -14,15 +11,22 @@ builder.Services.AddSingleton<AudioPipeline>();
 builder.Services.AddSingleton<IEventAggregator, DefaultEventAggregator>();
 builder.Services.AddSingleton<IDawClientFactory, DefaultDawClientFactory>();
 builder.Services.AddSingleton<SimpleHighPassFilter>();
+
+builder.Services.AddSingleton<IAudioProcessorFactory, AudioProcessorFactory>();
+
+//builder.Services.AddKeyedTransient<IAudioProcessor, SimpleHighPassFilter>(FilterType.Simple);
+//builder.Services.AddKeyedTransient<IAudioProcessor, ButterworthHighPassFilter12dB>(FilterType.Butterworth12dB);
+//builder.Services.AddKeyedTransient<IAudioProcessor, ButterworthHighPassFilter24dB>(FilterType.Butterworth24dB);
+
+builder.Services.AddSingleton<IAudioInput, NaudioInput>(); // Handles filter 
 builder.Services.AddSingleton(new NoiseGateProcessor { Threshold = 0.012f }); // (400 / 32768 ≈ 0.0122)
 builder.Services.AddHostedService<OscService>();
 builder.Services.AddSingleton<IAudioBufferProvider, DefaultAudioBufferProviderImpl>();
 builder.Services.AddSingleton<DefaultWhisperModelService>();
-builder.Services.AddHostedService<WhisperInferenceWorker>();
-builder.Services.AddSingleton<ChordFactory>();
+builder.Services.AddHostedService<WhisperInferenceWorker>(); /*AI Engine*/
+builder.Services.AddSingleton<ChordFactory>(); /*MUSIC THEORY */
 builder.Services.AddTransient<IIntentHandler, MusicTheoryHandler>();
 builder.Services.AddSingleton<IDawClientFactory, DefaultDawClientFactory>();
-
 builder.Services.AddSingleton<IClientManager, DefaultClientManagerImpl>();
 builder.Services.AddSingleton<IDawCommandController, DefaultDawCommandControllerImpl>();
 builder.Services.AddSingleton<IHandshakeListener, DefaultHandshakeListenerImpl>();

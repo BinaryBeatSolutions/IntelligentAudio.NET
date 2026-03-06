@@ -10,7 +10,7 @@ namespace IntelligentAudio.Infrastructure.Communication;
 /// <param name="clientFactory"></param>
 /// <param name="logger"></param>
 public class OscService(
-    IEventAggregator eventAggregator,
+    //IEventAggregator eventAggregator,
     IDawClientFactory clientFactory,
     ILogger<OscService> logger) : BackgroundService
 {
@@ -41,7 +41,7 @@ public class OscService(
                 if (Guid.TryParse(guidStr, out var clientId))
                 {
                     // --- STRATEGY FOR DYNAMIC PORTS ---
-                    int serverSendPort;
+                    int serverSendPort = 0;
                     using (var tempSocket = new UdpClient(0))
                     {
                         serverSendPort = ((IPEndPoint)tempSocket.Client.LocalEndPoint).Port;
@@ -59,19 +59,6 @@ public class OscService(
                 logger.LogError(ex, "[Error] Handshake failed.");
             }
         });
-
-        //////Main loop
-        //await foreach (var @event in eventAggregator.Subscribe<ChordDetectedEvent>(ct))
-        //{
-        //    /*
-        //     * Her we can add serveral types, like send play, stop etc.
-        //     */
-        //    var client = clientFactory.GetClient(@event.ClientId);
-        //    if (client is not null)
-        //    {
-        //        await client.SendChordAsync(@event.Chord);
-        //    }
-        //}
     }
 
     /// <summary>

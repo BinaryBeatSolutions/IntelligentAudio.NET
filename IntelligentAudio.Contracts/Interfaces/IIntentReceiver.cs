@@ -1,8 +1,8 @@
 ﻿namespace IntelligentAudio.Contracts.Interfaces;
 
 /// <summary>
-/// Ett agnostiskt gränssnitt för alla externa system som vill ta emot 
-/// tolkad data (Intents) från AI-motorn.
+/// An agnostic interface for any external system that wants to receive
+/// interpreted data (Intents) from the AI ​​engine.
 /// </summary>
 public interface IIntentReceiver : IDisposable
 {
@@ -11,8 +11,8 @@ public interface IIntentReceiver : IDisposable
     bool IsConnected { get; }
 
     /// <summary>
-    /// Tar emot ett generiskt objekt (t.ex. ChordInfo eller DawCommand).
-    /// Det är upp till implementationen att veta hur datan ska hanteras.
+    /// Receives a generic object (e.g. ChordInfo or DawCommand).
+    /// It is up to the implementation to know how to handle the data.
     /// </summary>
     ValueTask ReceiveAsync<T>(T intent, CancellationToken ct) where T : class;
 }

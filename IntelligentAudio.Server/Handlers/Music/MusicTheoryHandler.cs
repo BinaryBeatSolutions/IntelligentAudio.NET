@@ -8,7 +8,7 @@ public class MusicTheoryHandler(ChordFactory chordFactory, ILogger<MusicTheoryHa
 {
     public bool CanHandle(string text) =>
         !string.IsNullOrWhiteSpace(text) &&
-        text.Length < 20 && // Ackord är sällan långa meningar
+        text.Length < 20 && // <--- Ackord är sällan långa meningar
         chordFactory.IsChord(text);
 
     public async Task HandleAsync(string text, CancellationToken ct)

@@ -20,3 +20,7 @@ global using IntelligentAudio.Infrastructure.Communication;
 global using IntelligentAudio.Infrastructure.Factories;
 global using IntelligentAudio.Integrations.Common.Daw.Models;
 global using IntelligentAudio.Integrations.Common.Daw.Interfaces;
+global using IntelligentAudio.Infrastructure.Controllers;
+global using IntelligentAudio.Infrastructure.Services;
+global using IntelligentAudio.MusicTheory;
+global using IntelligentAudio.Server.Handlers.Music;

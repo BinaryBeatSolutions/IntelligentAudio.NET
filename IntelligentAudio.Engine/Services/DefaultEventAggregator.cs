@@ -1,7 +1,5 @@
 ﻿
-
 namespace IntelligentAudio.Engine.Services;
-
 
 public class DefaultEventAggregator : IEventAggregator
 {

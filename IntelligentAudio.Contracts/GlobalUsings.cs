@@ -6,3 +6,4 @@ global using System.Threading.Tasks;
 global using System.Threading.Channels;
 
 global using IntelligentAudio.Contracts;
+global using IntelligentAudio.Contracts.Models;

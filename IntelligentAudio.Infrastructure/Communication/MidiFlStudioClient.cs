@@ -4,6 +4,7 @@ using Melanchall.DryWetMidi.Multimedia;
 
 namespace IntelligentAudio.Infrastructure.Communication;
 
+//Future
 //public class MidiFlStudioClient(Guid clientId) : IDawClient
 //{
 //    public Guid ClientId => clientId;

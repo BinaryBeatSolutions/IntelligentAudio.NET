@@ -16,5 +16,6 @@
   <Folder Name="/_SolutionItems/ML4/">
     <File Path="ML4/ia_guid.js" />
   </Folder>
+  <Project Path="IntelligentAudio.API/IntelligentAudio.API.csproj" Id="c753a9d4-b81a-4e26-b851-b6e0c41420b7" />
   <Project Path="IntelligentAudio.Contracts/IntelligentAudio.Contracts.csproj" />
 </Solution>

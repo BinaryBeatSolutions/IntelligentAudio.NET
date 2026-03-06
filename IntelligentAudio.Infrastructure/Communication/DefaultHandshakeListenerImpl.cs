@@ -1,10 +1,6 @@
 ﻿namespace IntelligentAudio.Infrastructure.Communication;
 
 using BuildSoft.OscCore;
-using IntelligentAudio.Contracts.Interfaces;
-using IntelligentAudio.Contracts.Models;
-using Microsoft.Extensions.Logging;
-using System.Net;
 
 public sealed partial class DefaultHandshakeListenerImpl : IHandshakeListener, IDisposable
 {
@@ -42,7 +38,7 @@ public sealed partial class DefaultHandshakeListenerImpl : IHandshakeListener, I
 
     private void OnHandshakeReceived(OscMessageValues values)
     {
-        // Enligt din Max-bild: [0] int port, [1] string guid
+        //[0] int port, [1] string guid
         var preferredPort = values.ReadIntElement(0);
         var guidStr = values.ReadStringElement(1);
 

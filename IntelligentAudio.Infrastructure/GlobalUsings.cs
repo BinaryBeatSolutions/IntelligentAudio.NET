@@ -15,6 +15,7 @@ global using System.Runtime.InteropServices;
 
 global using static System.Runtime.InteropServices.JavaScript.JSType;
 
+global using IntelligentAudio.Contracts.Models;
 global using IntelligentAudio.Engine.Processors;
 global using IntelligentAudio.Contracts;
 global using IntelligentAudio.Infrastructure.Communication;

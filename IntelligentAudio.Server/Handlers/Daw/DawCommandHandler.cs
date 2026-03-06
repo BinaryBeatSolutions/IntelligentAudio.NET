@@ -1,8 +1,5 @@
-﻿namespace IntelligentAudio.Server.Handlers.Daw;
-
-using IntelligentAudio.Integrations.Common.Daw.Interfaces;
-using IntelligentAudio.Integrations.Common.Daw.Models;
-using Microsoft.Extensions.Logging;
+﻿
+namespace IntelligentAudio.Server.Handlers.Daw;
 
 public sealed partial class DawCommandHandler(
     IDawCommandController dawController,
@@ -43,7 +40,7 @@ public sealed partial class DawCommandHandler(
         }
 
         // 2. Matcha och exekvera
-        for (int i = 0; i < CommandMap.Length; i++)
+        for (int i = 0; i < CommandMap.Length; i++) 
         {
             var (key, action) = CommandMap[i];
             if (text.Contains(key, StringComparison.OrdinalIgnoreCase))

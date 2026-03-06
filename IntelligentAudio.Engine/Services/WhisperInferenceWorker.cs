@@ -6,9 +6,23 @@ public sealed class WhisperInferenceWorker(
     IEnumerable<IIntentHandler> intentHandlers, // Hämtar alla (t.ex. MusicTheoryHandler)
     DefaultWhisperModelService aiService,
     AudioPipeline pipeline,
+    IAudioProcessorFactory filterFactory,
+    IAudioInput audioInput,
     ILogger<WhisperInferenceWorker> logger) : BackgroundService
 {
     private readonly ArrayPool<float> _pool = ArrayPool<float>.Shared;
+    private IAudioProcessor? _highPass;
+
+    public void OnRecordingStarted(FilterType selectedType, float cutoff)
+    {
+        int rate = audioInput.SampleRate;
+        _highPass = filterFactory.CreateHighPassFilter(FilterType.Butterworth24dB, 80f, rate);
+    }
+
+    public void OnAudioBufferReceived(Span<float> buffer)
+    {
+        _highPass?.Process(buffer);
+    }
 
     protected override async Task ExecuteAsync(CancellationToken ct)
     {
@@ -38,8 +52,7 @@ public sealed class WhisperInferenceWorker(
 
                         logger.LogInformation("[WHISPER RAW]: {text}", text);
 
-                        // --- HÄR ÄR DEN NYA MAGIN ---
-                        // Vi frågar alla handlare (t.ex. din MusicTheoryHandler) om de vill ha texten
+                        // Vi frågar alla handlare (t.ex. MusicTheoryHandler) 
                         foreach (var handler in intentHandlers)
                         {
                             if (handler.CanHandle(text))

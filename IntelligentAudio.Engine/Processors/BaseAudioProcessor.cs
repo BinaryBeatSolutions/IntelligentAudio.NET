@@ -1,6 +1,4 @@
 ﻿
-
-
 namespace IntelligentAudio.Engine.Processors;
 
 public abstract class BaseAudioProcessor : IAudioProcessor
@@ -21,4 +19,5 @@ public abstract class BaseAudioProcessor : IAudioProcessor
     }
 
     protected abstract void OnProcess(Span<float> buffer);
+
 }
