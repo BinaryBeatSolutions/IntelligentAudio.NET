@@ -1,9 +1,10 @@
-﻿using Microsoft.ML.Tokenizers;
+﻿using IntelligentAudio.Contracts.Interfaces;
+using Microsoft.ML.Tokenizers;
 using System.IO;
 
 namespace IntelligentAudio.NeuralEngine.Services;
 
-public sealed class DefaultNeuralTokenizerImpl : IDisposable
+public sealed class DefaultNeuralTokenizerImpl : INeuralTokenizer, IDisposable
 {
     private readonly WordPieceTokenizer _tokenizer;
 
@@ -43,4 +44,5 @@ public sealed class DefaultNeuralTokenizerImpl : IDisposable
     }
 
     public void Dispose() { /* WordPieceTokenizer hanterar resurser internt */ }
+
 }

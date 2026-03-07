@@ -1,52 +1,48 @@
-﻿
-using BuildSoft.OscCore;
+﻿using IntelligentAudio.Contracts; // För IParameterDiscoveryHandler
+using IntelligentAudio.Contracts.Interfaces;
+using IntelligentAudio.NeuralEngine.Abstractions; // För IEmbeddingGenerator och INeuralTokenizer
 
 namespace IntelligentAudio.NeuralEngine.Services;
 
-public sealed class DiscoveryService : IDisposable
+public sealed class DiscoveryService : IParameterDiscoveryHandler
 {
-    private readonly DefaultNeuralTokenizerImpl _tokenizer;
+    private readonly INeuralTokenizer _tokenizer;
     private readonly IEmbeddingGenerator _embeddingGenerator;
     private readonly NeuralParameterRegistry _registry;
-    private readonly float[] _tempEmbeddingBuffer;
+    private readonly float[] _tempBuffer;
 
     public DiscoveryService(
-        DefaultNeuralTokenizerImpl tokenizer,
+        INeuralTokenizer tokenizer,
         IEmbeddingGenerator embeddingGenerator,
         NeuralParameterRegistry registry)
     {
         _tokenizer = tokenizer;
         _embeddingGenerator = embeddingGenerator;
         _registry = registry;
-        _tempEmbeddingBuffer = new float[embeddingGenerator.VectorSize];
+        // Förallokera bufferten baserat på modellens storlek (t.ex. 384)
+        _tempBuffer = new float[embeddingGenerator.VectorSize];
     }
 
-    // STRICT: Denna metod anropas när OSC-servern tar emot en lista med parametrar
-    public void OnDeviceParametersReceived(OscMessageValues message)
+    // STRICT: Vi använder Reset() istället för Dispose() för att återanvända ArrayPool-minnet
+    public void OnDiscoveryStarted() => _registry.Dispose();
+
+    public void OnParameterDiscovered(int id, ReadOnlySpan<char> name)
     {
-        // 1. Rensa existerande cache för den gamla pluginen
-        _registry.Dispose();
+        // 1. Tokenize på stacken (Zero-allocation)
+        Span<long> tokens = stackalloc long[128];
 
-        // 2. Loopa igenom OSC-meddelandet (STRICT: Ingen LINQ)
-        // Vi antar att Ableton skickar par: [Index, Namn, Index, Namn...]
-        for (int i = 0; i < message.ElementCount; i += 2)
-        {
-            int paramId = message.ReadIntElement(i);
-            string paramName = message.ReadStringElement(i + 1);
+        // 2. Använd den injicerade tokenizern
+        int count = _tokenizer.TokenizeToSpan(name.ToString(), tokens);
 
-            // 3. Tokenize på stacken
-            Span<long> tokens = stackalloc long[128];
-            int tokenCount = _tokenizer.TokenizeToSpan(paramName, tokens);
+        // 3. Generera embedding (Skriver direkt till vår temp-buffer)
+        _embeddingGenerator.GenerateEmbedding(tokens.Slice(0, count), _tempBuffer);
 
-            // 4. Skapa embedding till temporär buffer
-            _embeddingGenerator.GenerateEmbedding(tokens.Slice(0, tokenCount), _tempEmbeddingBuffer);
-
-            // 5. Registrera i det linjära minnet (Blixtsnabb sökning redo!)
-            _registry.RegisterParameter(paramId, _tempEmbeddingBuffer);
-        }
-
-        // Nu är motorn "armerad" för just denna VST/Plugin!
+        // 4. Spara i det blixtsnabba linjära registret
+        _registry.RegisterParameter(id, _tempBuffer);
     }
 
-    public void Dispose() => _registry.Dispose();
+    public void OnDiscoveryCompleted()
+    {
+        // Här kan vi logga: "Neural Engine armed with X parameters"
+    }
 }

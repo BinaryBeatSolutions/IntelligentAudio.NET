@@ -13,4 +13,9 @@
 		<PackageReference Include="BuildSoft.OscCore" Version="1.2.1.1" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <ProjectReference Include="..\IntelligentAudio.Contracts\IntelligentAudio.Contracts.csproj" />
+	  <ProjectReference Include="..\IntelligentAudio.Infrastructure\IntelligentAudio.Infrastructure.csproj" />
+	</ItemGroup>
+
 </Project>
