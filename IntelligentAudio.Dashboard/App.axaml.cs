@@ -1,7 +1,8 @@
 
-
 using IntelligentAudio.Contracts.Interfaces;
 using IntelligentAudio.Infrastructure.Services;
+using IntelligentAudio.Nexus;
+using IntelligentAudio.Nexus.Extensions;
 using IntelligentAudio.Providers;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -26,8 +27,20 @@ namespace IntelligentAudio.Dashboard
 
                 services.AddLogging();
 
+                var nexusDllPath = Path.Combine(AppContext.BaseDirectory, "IntelligentAudio.Nexus.dll");
+
+                if (File.Exists(nexusDllPath))
+                {
+                    // Init NEXUS
+                    services.AddNexusEngine();
+                }
+                else
+                {
+                    services.AddSingleton<INexusProvider, MockNexusProvider>();
+                }
+
                 // Registrera din NEXUS-stack
-                services.AddSingleton<INexusProvider, NexusProviderImpl>();
+
                 services.AddSingleton<NexusStorageEngine>();
                 services.AddSingleton<MemoryMappedManager>();
 

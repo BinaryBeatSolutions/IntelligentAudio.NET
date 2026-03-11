@@ -23,4 +23,14 @@
     <ProjectReference Include="..\Plugins\IntelligentAudio.MusicTheory\IntelligentAudio.MusicTheory.csproj" />
   </ItemGroup>
 
+	<ItemGroup>
+		<!-- Referens till privat binär -->
+		<Reference Include="IntelligentAudio.Nexus">
+			<HintPath>..\..\NEXUS\Delivery\IntelligentAudio.Nexus.dll</HintPath>
+			<!-- Viktigt: Hindra VS från att försöka dekompilera eller kopiera källkod -->
+			<SpecificVersion>False</SpecificVersion>
+			<Private>True</Private>
+		</Reference>
+	</ItemGroup>
+
 </Project>

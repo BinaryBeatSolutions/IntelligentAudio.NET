@@ -5,6 +5,7 @@
     <Nullable>enable</Nullable>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+	  <RuntimeIdentifier>win-x64</RuntimeIdentifier>
   </PropertyGroup>
 
   <ItemGroup>
@@ -24,7 +25,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\IntelligentAudio.Nexus\IntelligentAudio.Nexus.csproj" />
+    <ProjectReference Include="..\IntelligentAudio.Contracts\IntelligentAudio.Contracts.csproj" />
+    <ProjectReference Include="..\IntelligentAudio.Infrastructure\IntelligentAudio.Infrastructure.csproj" />
     <ProjectReference Include="..\IntelligentAudio.Providers\IntelligentAudio.Providers.csproj" />
   </ItemGroup>
+
+	<ItemGroup>
+		<Reference Include="IntelligentAudio.Nexus">
+			<HintPath>..\..\NEXUS\IntelligentAudio.Nexus\bin\Release\net10.0\IntelligentAudio.Nexus.dll</HintPath>
+			<Private>true</Private>
+		</Reference>
+	</ItemGroup>
 </Project>
