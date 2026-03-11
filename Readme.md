@@ -1,5 +1,16 @@
 # IntelligentAudio.NET
 
+## The Nexus Era
+
+Status: Strategic Architectural Migration Complete
+
+"We have moved into a new phase where the core engine is separated into a Native AOT-compiled binary.
+This is a strategic architectural shift to guarantee the deterministic performance and zero-latency
+that NEXUS delivers. By running the core as pure machine code directly against the hardware,
+we eliminate runtime overhead and ensure a professional-grade execution standard."
+
+--------------------------------------------------------------------------------------------------
+
 [.NET 10 LTS] | [C# 14] | [ONNX] | [WHISPER.NET] | [HIGH PRECISION AUDIO] ...
 
 For latest info, visit [IntelligentAudio.NET](https://intelligentAudio.Net)
