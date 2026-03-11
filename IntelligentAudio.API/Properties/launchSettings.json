@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "IntelligentAudio.API": {
+      "commandName": "Project",
+      "launchBrowser": false,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:10481;http://localhost:10482"
+    }
+  }
+}

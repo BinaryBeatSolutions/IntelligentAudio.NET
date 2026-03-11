@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <InvariantGlobalization>true</InvariantGlobalization>
+  </PropertyGroup>
+
+  <ItemGroup>
+	  <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.3" />
+	  <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="10.0.3" />
+	  <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\IntelligentAudio.Contracts\IntelligentAudio.Contracts.csproj" />
+    <ProjectReference Include="..\IntelligentAudio.Infrastructure\IntelligentAudio.Infrastructure.csproj" />
+    <ProjectReference Include="..\IntelligentAudio.NeuralEngine\IntelligentAudio.NeuralEngine.csproj" />
+    <ProjectReference Include="..\IntelligentAudio.Nexus\IntelligentAudio.Nexus.csproj" />
+    <ProjectReference Include="..\IntelligentAudio.Providers\IntelligentAudio.Providers.csproj" />
+    <ProjectReference Include="..\Plugins\IntelligentAudio.MusicTheory\IntelligentAudio.MusicTheory.csproj" />
+  </ItemGroup>
+
+</Project>

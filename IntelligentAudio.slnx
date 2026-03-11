@@ -1,0 +1,26 @@
+<Solution>
+  <Folder Name="/Plugins/">
+    <Project Path="Plugins/IntelligentAudio.Integrations.Ableton/IntelligentAudio.Integrations.Ableton.csproj" Id="a9b90b53-2c44-4ea0-a1b9-29578604c318" />
+    <Project Path="Plugins/IntelligentAudio.MusicTheory/IntelligentAudio.MusicTheory.csproj" Id="67eedfac-ec21-44b5-acc1-7dd419a1809a" />
+  </Folder>
+  <Folder Name="/_SolutionItems/">
+    <File Path="Readme.md" />
+  </Folder>
+  <Project Path="IntelligentAudio.Dashboard/IntelligentAudio.Dashboard.csproj" Id="54d78201-7001-48aa-956d-99e2f513457a" />
+  <Project Path="IntelligentAudio.Engine/IntelligentAudio.Engine.csproj" />
+  <Project Path="IntelligentAudio.Infrastructure/IntelligentAudio.Infrastructure.csproj" />
+  <Project Path="IntelligentAudio.Integrations.Common/IntelligentAudio.Integrations.Common.csproj" Id="ed83a9e2-cf5e-4c4e-aeae-a0a6cfb9f4bd" />
+  <Project Path="IntelligentAudio.NeuralEngine/IntelligentAudio.NeuralEngine.csproj" Id="1dcf25c0-baf5-421f-bd65-1efce44ed363" />
+  <!--<Project Path="IntelligentAudio.Nexus/IntelligentAudio.Nexus.csproj" Id="80cc2fbb-64a7-45d3-a7ee-e64172dd7cd2" />-->
+  <Project Path="IntelligentAudio.Providers/IntelligentAudio.Providers.csproj" Id="7d49c1ff-8bac-4c59-b2ff-ada85c540143" />
+  <Project Path="IntelligentAudio.Server/IntelligentAudio.Server.csproj" />
+  <Folder Name="/_SolutionItems/AI/">
+    <File Path="ARCHITECT.md" />
+    <File Path="ARCHITECTUE_V2.md" />
+  </Folder>
+  <Folder Name="/_SolutionItems/ML4/">
+    <File Path="ML4/ia_guid.js" />
+  </Folder>
+  <Project Path="IntelligentAudio.API/IntelligentAudio.API.csproj" Id="c753a9d4-b81a-4e26-b851-b6e0c41420b7" />
+  <Project Path="IntelligentAudio.Contracts/IntelligentAudio.Contracts.csproj" />
+</Solution>

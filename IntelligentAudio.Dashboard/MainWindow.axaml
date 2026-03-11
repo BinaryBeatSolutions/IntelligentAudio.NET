@@ -1,0 +1,52 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="using:IntelligentAudio.Dashboard.ViewModels"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="IntelligentAudio.Dashboard.MainWindow"
+        x:DataType="vm:NexusDashboardViewModel"
+        Title="IntelligentAudio.NET | NEXUS Portal"
+        Background="#121212">
+
+    <Design.DataContext>
+        <vm:NexusDashboardViewModel/>
+    </Design.DataContext>
+
+
+
+    <Grid RowDefinitions="Auto, *, Auto" Margin="20">
+
+
+           <Button Grid.Row="0" 
+            HorizontalAlignment="Right"
+            Content="SEED DATA" 
+            Command="{Binding SeedDataAsync}" />
+
+        <Button Command="{Binding TestSearchCommand}" 
+            Content="TEST SEARCH" 
+            Grid.Row="0" 
+            Margin="0,0,120,0"
+            HorizontalAlignment="Right"
+            Background="#FFD700" 
+            Foreground="Black" 
+            FontWeight="Bold"/>
+
+
+
+        <TextBlock Grid.Row="0" Text="NEXUS PORTAL ☁️✨" FontSize="20" Foreground="#00D2FF" FontWeight="Bold"/>
+        
+        <Border Grid.Row="1" Background="#0A0A0A" CornerRadius="8" Margin="0,20">
+            <TextBlock Text="READY TO MAP 1,000,000 SLOTS" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#333"/>
+        </Border>
+
+            <Border Grid.Row="1" Background="#0A0A0A" Margin="0,20">
+        <TextBlock Text="{Binding StatusText}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+    </Border>
+
+        <StackPanel Grid.Row="2" HorizontalAlignment="Center">
+            <TextBlock Text="INDEXED PARAMETERS" FontSize="10" Foreground="#666" HorizontalAlignment="Center"/>
+            <TextBlock Text="{Binding EntryCount}" FontSize="24" FontWeight="Black" Foreground="#00D2FF" HorizontalAlignment="Center"/>
+        </StackPanel>
+    </Grid>
+</Window>

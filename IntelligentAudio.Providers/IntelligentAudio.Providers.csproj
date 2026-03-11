@@ -1,0 +1,16 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>net10.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<!-- INGEN AllowUnsafeBlocks här! -->
+
+		<!-- Förbered för Native AOT så att hela din .exe blir snabb -->
+		<IsAotCompatible>true</IsAotCompatible>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\IntelligentAudio.Contracts\IntelligentAudio.Contracts.csproj" />
+		<ProjectReference Include="..\IntelligentAudio.Integrations.Common\IntelligentAudio.Integrations.Common.csproj" />
+	</ItemGroup>
+</Project>
